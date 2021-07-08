@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
+  <meta content="Copied to clipboard" name="lang:clipboard.copied"/>
+  <meta content="en" name="lang:search.language"/>
+  <meta content="True" name="lang:search.pipeline.stopwords"/>
+  <meta content="True" name="lang:search.pipeline.trimmer"/>
+  <meta content="No matching documents" name="lang:search.result.none"/>
+  <meta content="1 matching document" name="lang:search.result.one"/>
+  <meta content="# matching documents" name="lang:search.result.other"/>
+  <meta content="[\s\-]+" name="lang:search.tokenizer"/>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <style>
+   body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+  </style>
+  <link href="_static/stylesheets/application.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-palette.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-fixes.css" rel="stylesheet"/>
+  <link href="_static/fonts/material-icons.css" rel="stylesheet"/>
+  <meta content="#2196f3" name="theme-color"/>
+  <script src="_static/javascripts/modernizr.js">
+  </script>
+  <link href="_static/images/apple-icon-152x152.png" rel="apple-touch-icon"/>
+  <title>
+   Purpose and scope — Python dataframe interchange protocol 2021-DRAFT documentation
+  </title>
+  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
+  <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
+  </script>
+  <script src="_static/jquery.js">
+  </script>
+  <script src="_static/underscore.js">
+  </script>
+  <script src="_static/doctools.js">
+  </script>
+  <script src="_static/language_data.js">
+  </script>
+  <script src="_static/clipboard.min.js">
+  </script>
+  <script src="_static/copybutton.js">
+  </script>
+  <link href="genindex.html" rel="index" title="Index"/>
+  <link href="search.html" rel="search" title="Search"/>
+  <link href="design_requirements.html" rel="next" title="The __dataframe__ protocol"/>
+  <link href="index.html" rel="prev" title="Python array API standard"/>
+  <link href="_static/images/apple-icon-152x152.png" rel="apple-touch-icon"/>
+ </head>
+ <body data-md-color-accent="green" data-md-color-primary="indigo" dir="ltr">
+  <svg class="md-svg">
+   <defs data-children-count="0">
+    <svg height="448" id="__github" viewbox="0 0 416 448" width="416" xmlns="http://www.w3.org/2000/svg">
+     <path d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z" fill="currentColor">
+     </path>
+    </svg>
+   </defs>
+  </svg>
+  <input class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+  <input class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+  <label class="md-overlay" data-md-component="overlay" for="__drawer">
+  </label>
+  <a class="md-skip" href="#purpose_and_scope" tabindex="1">
+   Skip to content
+  </a>
+  <header class="md-header" data-md-component="header">
+   <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <a class="md-header-nav__button md-logo" href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+       <i class="md-icon">
+        
+       </i>
+      </a>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer">
+      </label>
+     </div>
+     <div class="md-flex__cell md-flex__cell--stretch">
+      <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+       <span class="md-header-nav__topic">
+        Python dataframe interchange protocol
+       </span>
+       <span class="md-header-nav__topic">
+        Purpose and scope
+       </span>
+      </div>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--search md-header-nav__button" for="__search">
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+       <label class="md-search__overlay" for="__search">
+       </label>
+       <div class="md-search__inner" role="search">
+        <form action="search.html" class="md-search__form" method="GET" name="search">
+         <input autocapitalize="off" autocomplete="off" class="md-search__input" data-md-component="query" data-md-state="active" name="q" placeholder="Search" spellcheck="false" type="text"/>
+         <label class="md-icon md-search__icon" for="__search">
+         </label>
+         <button class="md-icon md-search__icon" data-md-component="reset" tabindex="-1" type="reset">
+          
+         </button>
+        </form>
+        <div class="md-search__output">
+         <div class="md-search__scrollwrap" data-md-scrollfix="">
+          <div class="md-search-result" data-md-component="result">
+           <div class="md-search-result__meta">
+            Type to start searching
+           </div>
+           <ol class="md-search-result__list">
+           </ol>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <script src="_static/javascripts/version_dropdown.js">
+     </script>
+     <script>
+      var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+     </script>
+    </div>
+   </nav>
+  </header>
+  <div class="md-container">
+   <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+     <ul class="md-tabs__list">
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="index.html">
+        Dataframe interchange protcol
+       </a>
+      </li>
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="https://data-apis.org">
+        Consortium for Python Data API Standards
+       </a>
+      </li>
+     </ul>
+    </div>
+   </nav>
+   <main class="md-main">
+    <div class="md-main__inner md-grid" data-md-component="container">
+     <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--primary" data-md-level="0">
+         <label class="md-nav__title md-nav__title--site" for="__drawer">
+          <a class="md-nav__button md-logo" href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+           <i class="md-icon">
+            
+           </i>
+          </a>
+          <a href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+           Python dataframe interchange protocol
+          </a>
+         </label>
+         <ul class="md-nav__list">
+          <li class="md-nav__item">
+           <span class="md-nav__link caption">
+            <span class="caption-text">
+             Context
+            </span>
+           </span>
+          </li>
+          <li class="md-nav__item">
+           <input class="md-toggle md-nav__toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+           <label class="md-nav__link md-nav__link--active" for="__toc">
+            Purpose and scope
+           </label>
+           <a class="md-nav__link md-nav__link--active" href="#">
+            Purpose and scope
+           </a>
+           <nav class="md-nav md-nav--secondary">
+            <label class="md-nav__title" for="__toc">
+             Contents
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix="">
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#purpose-and-scope--page-root">
+               Purpose and scope
+              </a>
+              <nav class="md-nav">
+               <ul class="md-nav__list">
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#introduction">
+                  Introduction
+                 </a>
+                 <nav class="md-nav">
+                  <ul class="md-nav__list">
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#this-dataframe-protocol">
+                     This dataframe protocol
+                    </a>
+                   </li>
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#history">
+                     History
+                    </a>
+                    <nav class="md-nav">
+                     <ul class="md-nav__list">
+                      <li class="md-nav__item">
+                       <a class="md-nav__link" href="#python-dataframe-libraries">
+                        Python dataframe libraries
+                       </a>
+                      </li>
+                      <li class="md-nav__item">
+                       <a class="md-nav__link" href="#history-of-this-dataframe-protocol">
+                        History of this dataframe protocol
+                       </a>
+                      </li>
+                     </ul>
+                    </nav>
+                   </li>
+                  </ul>
+                 </nav>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#scope-includes-out-of-scope-non-goals">
+                  Scope (includes out-of-scope / non-goals)
+                 </a>
+                 <nav class="md-nav">
+                  <ul class="md-nav__list">
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#in-scope">
+                     In scope
+                    </a>
+                   </li>
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#out-of-scope">
+                     Out of scope
+                    </a>
+                   </li>
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#constraints">
+                     Constraints
+                    </a>
+                   </li>
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#progression-timeline">
+                     Progression / timeline
+                    </a>
+                   </li>
+                  </ul>
+                 </nav>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#stakeholders">
+                  Stakeholders
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#how-to-adopt-this-protocol">
+                  How to adopt this protocol
+                 </a>
+                </li>
+               </ul>
+              </nav>
+             </li>
+            </ul>
+           </nav>
+           <ul class="md-nav__list">
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#introduction">
+              Introduction
+             </a>
+            </li>
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#scope-includes-out-of-scope-non-goals">
+              Scope (includes out-of-scope / non-goals)
+             </a>
+            </li>
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#stakeholders">
+              Stakeholders
+             </a>
+            </li>
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#how-to-adopt-this-protocol">
+              How to adopt this protocol
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="design_requirements.html">
+            The
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            protocol
+           </a>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--secondary">
+         <label class="md-nav__title" for="__toc">
+          Contents
+         </label>
+         <ul class="md-nav__list" data-md-scrollfix="">
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="#purpose-and-scope--page-root">
+            Purpose and scope
+           </a>
+           <nav class="md-nav">
+            <ul class="md-nav__list">
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#introduction">
+               Introduction
+              </a>
+              <nav class="md-nav">
+               <ul class="md-nav__list">
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#this-dataframe-protocol">
+                  This dataframe protocol
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#history">
+                  History
+                 </a>
+                 <nav class="md-nav">
+                  <ul class="md-nav__list">
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#python-dataframe-libraries">
+                     Python dataframe libraries
+                    </a>
+                   </li>
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#history-of-this-dataframe-protocol">
+                     History of this dataframe protocol
+                    </a>
+                   </li>
+                  </ul>
+                 </nav>
+                </li>
+               </ul>
+              </nav>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#scope-includes-out-of-scope-non-goals">
+               Scope (includes out-of-scope / non-goals)
+              </a>
+              <nav class="md-nav">
+               <ul class="md-nav__list">
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#in-scope">
+                  In scope
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#out-of-scope">
+                  Out of scope
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#constraints">
+                  Constraints
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#progression-timeline">
+                  Progression / timeline
+                 </a>
+                </li>
+               </ul>
+              </nav>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#stakeholders">
+               Stakeholders
+              </a>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#how-to-adopt-this-protocol">
+               How to adopt this protocol
+              </a>
+             </li>
+            </ul>
+           </nav>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-content">
+      <article class="md-content__inner md-typeset" role="main">
+       <h1 id="purpose-and-scope--page-root">
+        Purpose and scope
+        <a class="headerlink" href="#purpose-and-scope--page-root" title="Permalink to this headline">
+         ¶
+        </a>
+       </h1>
+       <div class="admonition note">
+        <p class="admonition-title">
+         Note
+        </p>
+        <p>
+         This document is ready for wider community feedback, but still contains a
+number of TODOs, and is expected to change and evolve before a first official
+release. At least two independent implementation are also needed, in order to
+validate the design and find potential issues.
+        </p>
+       </div>
+       <h2 id="introduction">
+        Introduction
+        <a class="headerlink" href="#introduction" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <p>
+        Python users today have a number of great choices for dataframe libraries.
+From Pandas and cuDF to Vaex, Koalas, Modin, Ibis, and more. Combining multiple
+types of dataframes in a larger application or analysis workflow, or developing
+a library which uses dataframes as a data structure, presents a challenge
+though. Those libraries all have different APIs, and there is no standard way
+of converting one type of dataframe into another.
+       </p>
+       <h3 id="this-dataframe-protocol">
+        This dataframe protocol
+        <a class="headerlink" href="#this-dataframe-protocol" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <p>
+        The purpose of this dataframe protocol (
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        ) is to enable
+        <em>
+         data
+interchange
+        </em>
+        . I.e., a way to convert one type of dataframe into another type
+(for example, convert a Koalas dataframe into a Pandas dataframe, or a cuDF
+dataframe into a Vaex dataframe).
+       </p>
+       <p>
+        Currently (July 2021) there is no way to do this in an
+implementation-independent way.
+       </p>
+       <p>
+        A main use case this protocol intends to enable is to make it possible to
+write code that can accept any type of dataframe instead of being tied to a
+single type of dataframe. To illustrate that:
+       </p>
+       <div class="highlight-python notranslate">
+        <div class="highlight">
+         <pre><span></span><span class="k">def</span> <span class="nf">somefunc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="sd">"""`df` can be any dataframe supporting the protocol, rather than (say)</span>
+<span class="sd">    only a pandas.DataFrame"""</span>
+    <span class="c1"># could also be `cudf.from_dataframe(df)`, or `vaex.from_dataframe(df)`</span>
+    <span class="c1"># note: this should throw a TypeError if it cannot be done without a device</span>
+    <span class="c1"># transfer (e.g. move data from GPU to CPU) - add `force=True` in that case</span>
+    <span class="n">new_pandas_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="c1"># From now on, use Pandas dataframe internally</span>
+</pre>
+        </div>
+       </div>
+       <p>
+        It is important to note that providing a
+        <em>
+         complete, standardized dataframe API
+        </em>
+        is not a goal of the
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        protocol. Instead, this is a goal of the
+full dataframe API standard, which the Consortium for Python Data API Standards
+aims to develop in the future. When that full API standard is implemented by
+dataframe libraries, the example above can change to:
+       </p>
+       <div class="highlight-python notranslate">
+        <div class="highlight">
+         <pre><span></span><span class="k">def</span> <span class="nf">get_df_module</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="sd">"""Utility function to support programming against a dataframe API"""</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'__dataframe_namespace__'</span><span class="p">):</span>
+       <span class="c1"># Retrieve the namespace</span>
+       <span class="n">pdx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">__dataframe_namespace__</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Here we can raise an exception if we only want to support compliant dataframes,</span>
+        <span class="c1"># or convert to our default choice of dataframe if we want to accept (e.g.) dicts</span>
+        <span class="n">pdx</span> <span class="o">=</span> <span class="n">pd</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pdx</span><span class="p">,</span> <span class="n">df</span>
+
+
+<span class="k">def</span> <span class="nf">somefunc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="sd">"""`df` can be any dataframe conforming to the dataframe API standard"""</span>
+    <span class="n">pdx</span><span class="p">,</span> <span class="n">df</span> <span class="o">=</span> <span class="n">get_df_module</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="c1"># From now on, use `df` methods and `pdx` functions/objects</span>
+</pre>
+        </div>
+       </div>
+       <h3 id="history">
+        History
+        <a class="headerlink" href="#history" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <p>
+        Dataframe libraries in several programming language exist, such as
+        <a class="reference external" href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame">
+         R
+        </a>
+        ,
+        <a class="reference external" href="https://docs.databricks.com/spark/latest/dataframes-datasets/introduction-to-dataframes-scala.html">
+         Scala
+        </a>
+        ,
+        <a class="reference external" href="https://juliadata.github.io/DataFrames.jl/stable/">
+         Julia
+        </a>
+        and others.
+       </p>
+       <p>
+        In Python, the most popular dataframe library is
+        <a class="reference external" href="https://pandas.pydata.org/">
+         pandas
+        </a>
+        .
+pandas was initially developed at a hedge fund, with a focus on
+        <a class="reference external" href="https://en.wikipedia.org/wiki/Panel_data">
+         panel data
+        </a>
+        and financial time series.
+It was open sourced in 2009, and since then it has been growing in popularity, including
+many other domains outside time series and financial data. While still rich in time series
+functionality, today is considered a general-purpose dataframe library. The original
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          Panel
+         </span>
+        </code>
+        class that gave name to the library was deprecated in 2017 and removed in 2019,
+to focus on the main
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          DataFrame
+         </span>
+        </code>
+        class.
+       </p>
+       <p>
+        Internally, pandas is implemented (mostly) on top of NumPy, which is used to
+store the data and to perform many of the operations. Some parts of pandas are
+written in Cython.
+       </p>
+       <p>
+        Other libraries emerged in the last years, to address some of the limitations of pandas.
+But in most cases, the libraries implemented a public API very similar to pandas, to
+make the transition to their libraries easier. The next section provides a
+short description of the main dataframe libraries in Python.
+       </p>
+       <h4 id="python-dataframe-libraries">
+        Python dataframe libraries
+        <a class="headerlink" href="#python-dataframe-libraries" title="Permalink to this headline">
+         ¶
+        </a>
+       </h4>
+       <p>
+        <a class="reference external" href="https://dask.org/">
+         Dask
+        </a>
+        is a task scheduler built in Python, which implements a
+dataframe interface. Dask dataframe uses pandas internally in the workers, and it provides
+an API similar to pandas, adapted to its distributed and lazy nature.
+       </p>
+       <p>
+        <a class="reference external" href="https://vaex.io/">
+         Vaex
+        </a>
+        is an out-of-core alternative to pandas. Vaex uses hdf5 to
+create memory maps that avoid loading data sets to memory. Some parts of Vaex are
+implemented in C++.
+       </p>
+       <p>
+        <a class="reference external" href="https://github.com/modin-project/modin">
+         Modin
+        </a>
+        is a distributed dataframe
+library originally built on
+        <a class="reference external" href="https://github.com/ray-project/ray">
+         Ray
+        </a>
+        , but has
+a more modular way, that allows it to also use Dask as a scheduler, or replace the
+pandas-like public API by a SQLite-like one.
+       </p>
+       <p>
+        <a class="reference external" href="https://github.com/rapidsai/cudf">
+         cuDF
+        </a>
+        is a GPU dataframe library built on top
+of Apache Arrow and RAPIDS. It provides an API similar to pandas.
+       </p>
+       <p>
+        <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/index.html">
+         PySpark
+        </a>
+        is a
+dataframe library that uses Spark as a backend. PySpark public API is based on the
+original Spark API, and not in pandas.
+       </p>
+       <p>
+        <a class="reference external" href="https://github.com/databricks/koalas">
+         Koalas
+        </a>
+        is a dataframe library built on
+top of PySpark that provides a pandas-like API.
+       </p>
+       <p>
+        <a class="reference external" href="https://ibis-project.org/">
+         Ibis
+        </a>
+        is a dataframe library with multiple SQL backends.
+It uses SQLAlchemy and a custom SQL compiler to translate its pandas-like API to
+SQL statements, executed by the backends. It supports conventional DBMS, as well
+as big data systems such as Apache Impala or BigQuery.
+       </p>
+       <h4 id="history-of-this-dataframe-protocol">
+        History of this dataframe protocol
+        <a class="headerlink" href="#history-of-this-dataframe-protocol" title="Permalink to this headline">
+         ¶
+        </a>
+       </h4>
+       <p>
+        While there is no dataframe protocol like the one described in this document in
+Python yet, there is a long history of
+        <em>
+         array
+        </em>
+        interchange protocols - the
+Python buffer protocol, various NumPy protocols like
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __array_interface__
+         </span>
+        </code>
+        ,
+DLPack, and more.
+       </p>
+       <p>
+        A number of people have discussed creating a similar protocol for dataframes.
+Such discussions gained momentum when Gael Varoquaux discussed the possibility
+of a dataframe interchange protocol last year in a
+        <a class="reference external" href="https://discuss.ossdata.org/t/a-dataframe-protocol-for-the-pydata-ecosystem/26">
+         Discourse thread
+        </a>
+        .
+In response, Wes McKinney implemented an initial
+        <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1">
+         prototype
+        </a>
+        . The
+conversation and prototype generated a number of good ideas and stimulating
+discussions; however, the topic was complex enough to necessitate a more
+comprehensive approach, including collecting requirements and use cases from
+a large set of stakeholders. This protocol is a natural follow-up to those
+early discussions, and is taking exactly such a comprehensive approach.
+       </p>
+       <span id="scope">
+       </span>
+       <h2 id="scope-includes-out-of-scope-non-goals">
+        Scope (includes out-of-scope / non-goals)
+        <a class="headerlink" href="#scope-includes-out-of-scope-non-goals" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <p>
+        This section outlines what is in scope and out of scope for this dataframe
+interchange protocol.
+       </p>
+       <h3 id="in-scope">
+        In scope
+        <a class="headerlink" href="#in-scope" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <p>
+        The scope of the dataframe interchange protocol includes:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          Functionality which needs to be included in a dataframe library for it to
+support this protocol.
+         </p>
+        </li>
+        <li>
+         <p>
+          Names of the relevant methods and functions.
+         </p>
+        </li>
+        <li>
+         <p>
+          Function signatures, including type annotations.
+         </p>
+        </li>
+        <li>
+         <p>
+          Semantics of functions and methods.
+         </p>
+        </li>
+        <li>
+         <p>
+          Data type and device support.
+         </p>
+        </li>
+        <li>
+         <p>
+          Memory ownership and lifetime.
+         </p>
+        </li>
+        <li>
+         <p>
+          Basic dataframe metadata.
+         </p>
+        </li>
+       </ul>
+       <h3 id="out-of-scope">
+        Out of scope
+        <a class="headerlink" href="#out-of-scope" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <ol>
+        <li>
+         <p>
+          Providing a full dataframe API is out of scope.
+         </p>
+         <p>
+          <em>
+           Rationale: this is a much larger undertaking, .
+          </em>
+         </p>
+        </li>
+        <li>
+         <p>
+          Non-Python API standardization (e.g., C/C++ APIs)
+         </p>
+        </li>
+        <li>
+         <p>
+          Standardization of these dtypes is out of scope: object dtype,
+nested/structured dtypes, and custom dtypes via an extension mechanism.
+         </p>
+         <p>
+          <em>
+           Rationale: object dtypes are inefficient and may contain anything (so hard
+to support in a sensible way); nested/structures dtypes may be supported in
+the future but are not used that much and are complex to implement; custom
+dtypes would increase design complexity that is not justified.
+          </em>
+         </p>
+        </li>
+        <li>
+         <p>
+          Strided data storage, i.e. data that is regularly laid out but not
+contiguous in memory, is out of scope.
+         </p>
+         <p>
+          <em>
+           Rationale: not all libraries support strided data (e.g., Apache Arrow).
+Adding support to avoid copies may not have many real-world benefits.
+          </em>
+         </p>
+        </li>
+        <li>
+         <p>
+          “virtual columns”, i.e. columns for which the data is not yet in memory
+because it uses lazy evaluation, are not supported other than through
+letting the producer materialize the data in memory when the consumer
+calls
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            __dataframe__
+           </span>
+          </code>
+          .
+         </p>
+         <p>
+          <em>
+           Rationale: the full dataframe API will support this use case by
+“programming to an interface”; this data interchange protocol is
+fundamentally built around describing data in memory
+          </em>
+          .
+         </p>
+        </li>
+       </ol>
+       <p>
+        <strong>
+         Non-goals
+        </strong>
+        for the API standard include:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          Providing a full dataframe API to enable “programming to an API”.
+         </p>
+        </li>
+       </ul>
+       <h3 id="constraints">
+        Constraints
+        <a class="headerlink" href="#constraints" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <p>
+        An important constraint on the
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        protocol is that it should not
+make achieving the goal of the complete standardized dataframe API more
+difficult to achieve.
+       </p>
+       <p>
+        There is a small concern here. Say that a library adopts
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        first,
+and it goes from supporting only Pandas to officially supporting other
+dataframes like
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          modin.pandas.DataFrame
+         </span>
+        </code>
+        . At that point, changing to
+supporting the full dataframe API standard as a next step
+        <em>
+         implies a
+backwards compatibility break
+        </em>
+        for users that now start relying on Modin
+dataframe support. E.g., the second transition will change from returning a
+Pandas dataframe from
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          somefunc(df_modin)
+         </span>
+        </code>
+        to returning a Modin dataframe
+later. It must be made very clear to libraries accepting
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        that
+this is a consequence, and that that should be acceptable to them.
+       </p>
+       <h3 id="progression-timeline">
+        Progression / timeline
+        <a class="headerlink" href="#progression-timeline" title="Permalink to this headline">
+         ¶
+        </a>
+       </h3>
+       <ul class="simple">
+        <li>
+         <p>
+          <strong>
+           Current status
+          </strong>
+          : most dataframe-consuming libraries work
+          <em>
+           only
+          </em>
+          with
+Pandas, and rely on many Pandas-specific functions, methods and behavior.
+         </p>
+        </li>
+        <li>
+         <p>
+          <strong>
+           Status after
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __dataframe__
+            </span>
+           </code>
+          </strong>
+          : with minor code changes (as in first
+example above), libraries can start supporting all conforming dataframes,
+convert them to Pandas dataframes, and still rely on the same
+Pandas-specific functions, methods and behavior.
+         </p>
+        </li>
+        <li>
+         <p>
+          <strong>
+           Status after standard dataframe API adoption
+          </strong>
+          : libraries can start
+supporting all conforming dataframes
+          <em>
+           without converting to Pandas or
+relying on its implementation details
+          </em>
+          . At this point, it’s possible to
+“program to an interface” rather than to a specific library like Pandas.
+         </p>
+        </li>
+       </ul>
+       <h2 id="stakeholders">
+        Stakeholders
+        <a class="headerlink" href="#stakeholders" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <p>
+        Dataframes are a key element of data science workflows and appplications. Hence
+there are many stakeholders for a dataframe protocol like this.  The
+        <em>
+         direct
+        </em>
+        stakeholders of this standard are authors/maintainers of
+Python dataframe libraries. There are many more types of
+        <em>
+         indirect
+        </em>
+        stakeholders
+though, including:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          maintainers of libraries and other programs which depend on dataframe libraries
+(called “dataframe-consuming libraries” in the rest of this document)
+         </p>
+        </li>
+        <li>
+         <p>
+          Python dataframe end users
+         </p>
+        </li>
+        <li>
+         <p>
+          authors of non-Python dataframe libraries
+         </p>
+        </li>
+       </ul>
+       <p>
+        Libraries that are being most actively considered during the creation of the
+first version of this protocol include:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          <a class="reference external" href="https://pandas.pydata.org">
+           pandas
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://dask.org/">
+           Dask
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://github.com/rapidsai/cudf">
+           cuDF
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://vaex.io/">
+           Vaex
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://github.com/modin-project/modin">
+           Modin
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://github.com/databricks/koalas">
+           Koalas
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://ibis-project.org/">
+           Ibis
+          </a>
+         </p>
+        </li>
+       </ul>
+       <p>
+        Other Python dataframe libraries that are currently under active development and
+could adopt this protocol include:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          <a class="reference external" href="https://spark.apache.org/docs/latest/api/python/">
+           PySpark
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://github.com/apple/turicreate">
+           Turi Create
+          </a>
+         </p>
+        </li>
+       </ul>
+       <p>
+        Other relevant projects that provide “infrastructure” for dataframe libraries
+to build on, include:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          <a class="reference external" href="https://arrow.apache.org/">
+           Apache Arrow
+          </a>
+          and its Python bindings
+          <a class="reference external" href="https://arrow.apache.org/docs/python">
+           PyArrow
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://numpy.org/">
+           NumPy
+          </a>
+         </p>
+        </li>
+       </ul>
+       <p>
+        There are a lot of dataframe-consuming libraries; some of the most
+prominent ones include:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          <a class="reference external" href="https://scikit-learn.org/">
+           scikit-learn
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://matplotlib.org/">
+           Matplotlib
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://networkx.github.io/">
+           Seaborn
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a class="reference external" href="https://pyjanitor.readthedocs.io/">
+           pyjanitor
+          </a>
+         </p>
+        </li>
+       </ul>
+       <p>
+        Compilers, runtimes, and dispatching layers for which this API standard may be
+relevant:
+       </p>
+       <ul class="simple">
+        <li>
+         <p>
+          TODO
+         </p>
+        </li>
+       </ul>
+       <span id="id1">
+       </span>
+       <h2 id="how-to-adopt-this-protocol">
+        How to adopt this protocol
+        <a class="headerlink" href="#how-to-adopt-this-protocol" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <p>
+        To adopt the protocol, a dataframe library must implement a method named
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        on its dataframe class/object.
+       </p>
+       <p>
+        <em>
+         TODO: versioning the protocol
+        </em>
+       </p>
+      </article>
+     </div>
+    </div>
+   </main>
+  </div>
+  <footer class="md-footer">
+   <div class="md-footer-nav">
+    <nav class="md-footer-nav__inner md-grid">
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--prev" href="index.html" rel="prev" title="Python array API standard">
+      <div class="md-flex__cell md-flex__cell--shrink">
+       <i class="md-icon md-icon--arrow-back md-footer-nav__button">
+       </i>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+       <span class="md-flex__ellipsis">
+        <span class="md-footer-nav__direction">
+         Previous
+        </span>
+        Python array API standard
+       </span>
+      </div>
+     </a>
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="design_requirements.html" rel="next" title="The __dataframe__ protocol">
+      <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+       <span class="md-flex__ellipsis">
+        <span class="md-footer-nav__direction">
+         Next
+        </span>
+        The
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        protocol
+       </span>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+       <i class="md-icon md-icon--arrow-forward md-footer-nav__button">
+       </i>
+      </div>
+     </a>
+    </nav>
+   </div>
+   <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+     <div class="md-footer-copyright">
+      <div class="md-footer-copyright__highlight">
+       © Copyright 2021, Consortium for Python Data API Standards.
+      </div>
+      Created using
+      <a href="http://www.sphinx-doc.org/">
+       Sphinx
+      </a>
+      3.1.1.
+             and
+      <a href="https://github.com/bashtage/sphinx-material/">
+       Material for
+              Sphinx
+      </a>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script src="_static/javascripts/application.js">
+  </script>
+  <script>
+   app.initialize({version: "1.0.4", url: {base: ".."}})
+  </script>
+ </body>
+</html>
