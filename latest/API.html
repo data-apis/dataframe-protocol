@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
+  <meta content="Copied to clipboard" name="lang:clipboard.copied"/>
+  <meta content="en" name="lang:search.language"/>
+  <meta content="True" name="lang:search.pipeline.stopwords"/>
+  <meta content="True" name="lang:search.pipeline.trimmer"/>
+  <meta content="No matching documents" name="lang:search.result.none"/>
+  <meta content="1 matching document" name="lang:search.result.one"/>
+  <meta content="# matching documents" name="lang:search.result.other"/>
+  <meta content="[\s\-]+" name="lang:search.tokenizer"/>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <style>
+   body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+  </style>
+  <link href="_static/stylesheets/application.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-palette.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-fixes.css" rel="stylesheet"/>
+  <link href="_static/fonts/material-icons.css" rel="stylesheet"/>
+  <meta content="#2196f3" name="theme-color"/>
+  <script src="_static/javascripts/modernizr.js">
+  </script>
+  <link href="_static/images/apple-icon-152x152.png" rel="apple-touch-icon"/>
+  <title>
+   API of the __dataframe__ protocol — Python dataframe interchange protocol 2021-DRAFT documentation
+  </title>
+  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
+  <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
+  </script>
+  <script src="_static/jquery.js">
+  </script>
+  <script src="_static/underscore.js">
+  </script>
+  <script src="_static/doctools.js">
+  </script>
+  <script src="_static/language_data.js">
+  </script>
+  <script src="_static/clipboard.min.js">
+  </script>
+  <script src="_static/copybutton.js">
+  </script>
+  <link href="genindex.html" rel="index" title="Index"/>
+  <link href="search.html" rel="search" title="Search"/>
+  <link href="design_requirements.html" rel="prev" title="The __dataframe__ protocol"/>
+  <link href="_static/images/apple-icon-152x152.png" rel="apple-touch-icon"/>
+ </head>
+ <body data-md-color-accent="green" data-md-color-primary="indigo" dir="ltr">
+  <svg class="md-svg">
+   <defs data-children-count="0">
+    <svg height="448" id="__github" viewbox="0 0 416 448" width="416" xmlns="http://www.w3.org/2000/svg">
+     <path d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z" fill="currentColor">
+     </path>
+    </svg>
+   </defs>
+  </svg>
+  <input class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+  <input class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+  <label class="md-overlay" data-md-component="overlay" for="__drawer">
+  </label>
+  <a class="md-skip" href="#API" tabindex="1">
+   Skip to content
+  </a>
+  <header class="md-header" data-md-component="header">
+   <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <a class="md-header-nav__button md-logo" href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+       <i class="md-icon">
+        
+       </i>
+      </a>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer">
+      </label>
+     </div>
+     <div class="md-flex__cell md-flex__cell--stretch">
+      <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+       <span class="md-header-nav__topic">
+        Python dataframe interchange protocol
+       </span>
+       <span class="md-header-nav__topic">
+        API of the __dataframe__ protocol
+       </span>
+      </div>
+     </div>
+     <div class="md-flex__cell md-flex__cell--shrink">
+      <label class="md-icon md-icon--search md-header-nav__button" for="__search">
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+       <label class="md-search__overlay" for="__search">
+       </label>
+       <div class="md-search__inner" role="search">
+        <form action="search.html" class="md-search__form" method="GET" name="search">
+         <input autocapitalize="off" autocomplete="off" class="md-search__input" data-md-component="query" data-md-state="active" name="q" placeholder="Search" spellcheck="false" type="text"/>
+         <label class="md-icon md-search__icon" for="__search">
+         </label>
+         <button class="md-icon md-search__icon" data-md-component="reset" tabindex="-1" type="reset">
+          
+         </button>
+        </form>
+        <div class="md-search__output">
+         <div class="md-search__scrollwrap" data-md-scrollfix="">
+          <div class="md-search-result" data-md-component="result">
+           <div class="md-search-result__meta">
+            Type to start searching
+           </div>
+           <ol class="md-search-result__list">
+           </ol>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <script src="_static/javascripts/version_dropdown.js">
+     </script>
+     <script>
+      var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+     </script>
+    </div>
+   </nav>
+  </header>
+  <div class="md-container">
+   <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+     <ul class="md-tabs__list">
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="index.html">
+        Dataframe interchange protcol
+       </a>
+      </li>
+      <li class="md-tabs__item">
+       <a class="md-tabs__link" href="https://data-apis.org">
+        Consortium for Python Data API Standards
+       </a>
+      </li>
+     </ul>
+    </div>
+   </nav>
+   <main class="md-main">
+    <div class="md-main__inner md-grid" data-md-component="container">
+     <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--primary" data-md-level="0">
+         <label class="md-nav__title md-nav__title--site" for="__drawer">
+          <a class="md-nav__button md-logo" href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+           <i class="md-icon">
+            
+           </i>
+          </a>
+          <a href="index.html" title="Python dataframe interchange protocol 2021-DRAFT documentation">
+           Python dataframe interchange protocol
+          </a>
+         </label>
+         <ul class="md-nav__list">
+          <li class="md-nav__item">
+           <span class="md-nav__link caption">
+            <span class="caption-text">
+             Context
+            </span>
+           </span>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="purpose_and_scope.html">
+            Purpose and scope
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="design_requirements.html">
+            The
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            protocol
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <input class="md-toggle md-nav__toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+           <label class="md-nav__link md-nav__link--active" for="__toc">
+            API of the
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            protocol
+           </label>
+           <a class="md-nav__link md-nav__link--active" href="#">
+            API of the
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            protocol
+           </a>
+           <nav class="md-nav md-nav--secondary">
+            <label class="md-nav__title" for="__toc">
+             Contents
+            </label>
+            <ul class="md-nav__list" data-md-scrollfix="">
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#api--page-root">
+               API of the
+               <code class="docutils literal notranslate">
+                <span class="pre">
+                 __dataframe__
+                </span>
+               </code>
+               protocol
+              </a>
+              <nav class="md-nav">
+               <ul class="md-nav__list">
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#concepts-in-this-design">
+                  Concepts in this design
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#design-decisions">
+                  Design decisions
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#interface">
+                  Interface
+                 </a>
+                </li>
+               </ul>
+              </nav>
+             </li>
+            </ul>
+           </nav>
+           <ul class="md-nav__list">
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#concepts-in-this-design">
+              Concepts in this design
+             </a>
+            </li>
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#design-decisions">
+              Design decisions
+             </a>
+            </li>
+            <li class="md-nav__item">
+             <a class="md-nav__link" href="#interface">
+              Interface
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+      <div class="md-sidebar__scrollwrap">
+       <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--secondary">
+         <label class="md-nav__title" for="__toc">
+          Contents
+         </label>
+         <ul class="md-nav__list" data-md-scrollfix="">
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="#api--page-root">
+            API of the
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            protocol
+           </a>
+           <nav class="md-nav">
+            <ul class="md-nav__list">
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#concepts-in-this-design">
+               Concepts in this design
+              </a>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#design-decisions">
+               Design decisions
+              </a>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#interface">
+               Interface
+              </a>
+             </li>
+            </ul>
+           </nav>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="md-content">
+      <article class="md-content__inner md-typeset" role="main">
+       <h1 id="api--page-root">
+        API of the
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        protocol
+        <a class="headerlink" href="#api--page-root" title="Permalink to this headline">
+         ¶
+        </a>
+       </h1>
+       <p>
+        Specification for objects to be accessed, for the purpose of dataframe
+interchange between libraries, via the
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        method on a libraries’
+data frame object.
+       </p>
+       <p>
+        For guiding requirements, see
+        <a class="reference internal" href="design_requirements.html#design-requirements">
+         <span class="std std-ref">
+          Protocol design requirements
+         </span>
+        </a>
+        .
+       </p>
+       <h2 id="concepts-in-this-design">
+        Concepts in this design
+        <a class="headerlink" href="#concepts-in-this-design" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <ol class="simple">
+        <li>
+         <p>
+          A
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            Buffer
+           </span>
+          </code>
+          class. A
+          <em>
+           buffer
+          </em>
+          is a contiguous block of memory - this is the
+only thing that actually maps to a 1-D array in a sense that it could be
+converted to NumPy, CuPy, et al.
+         </p>
+        </li>
+        <li>
+         <p>
+          A
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            Column
+           </span>
+          </code>
+          class. A
+          <em>
+           column
+          </em>
+          has a single dtype. It can consist
+of multiple
+          <em>
+           chunks
+          </em>
+          . A single chunk of a column (which may be the whole
+column if
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            num_chunks
+           </span>
+           <span class="pre">
+            ==
+           </span>
+           <span class="pre">
+            1
+           </span>
+          </code>
+          ) is modeled as again a
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            Column
+           </span>
+          </code>
+          instance, and
+contains 1 data
+          <em>
+           buffer
+          </em>
+          and (optionally) one
+          <em>
+           mask
+          </em>
+          for missing data.
+         </p>
+        </li>
+        <li>
+         <p>
+          A
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            DataFrame
+           </span>
+          </code>
+          class. A
+          <em>
+           data frame
+          </em>
+          is an ordered collection of
+          <em>
+           columns
+          </em>
+          ,
+which are identified with names that are unique strings.  All the data
+frame’s rows are the same length. It can consist of multiple
+          <em>
+           chunks
+          </em>
+          . A
+single chunk of a data frame is modeled as again a
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            DataFrame
+           </span>
+          </code>
+          instance.
+         </p>
+        </li>
+        <li>
+         <p>
+          A
+          <em>
+           mask
+          </em>
+          concept. A
+          <em>
+           mask
+          </em>
+          of a single-chunk column is a
+          <em>
+           buffer
+          </em>
+          .
+         </p>
+        </li>
+        <li>
+         <p>
+          A
+          <em>
+           chunk
+          </em>
+          concept. A
+          <em>
+           chunk
+          </em>
+          is a sub-dividing element that can be applied
+to a
+          <em>
+           data frame
+          </em>
+          or a
+          <em>
+           column
+          </em>
+          .
+         </p>
+        </li>
+       </ol>
+       <p>
+        Note that the only way to access these objects is through a call to
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        on a data frame object. This is NOT meant as public API;
+only think of instances of the different classes here to describe the API of
+what is returned by a call to
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        . They are the concepts needed
+to capture the memory layout and data access of a data frame.
+       </p>
+       <h2 id="design-decisions">
+        Design decisions
+        <a class="headerlink" href="#design-decisions" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <ol>
+        <li>
+         <p>
+          Use a separate column abstraction in addition to a dataframe interface.
+         </p>
+         <p>
+          Rationales:
+         </p>
+         <ul class="simple">
+          <li>
+           <p>
+            This is how it works in R, Julia and Apache Arrow.
+           </p>
+          </li>
+          <li>
+           <p>
+            Semantically most existing applications and users treat a column similar to a 1-D array
+           </p>
+          </li>
+          <li>
+           <p>
+            We should be able to connect a column to the array data interchange mechanism(s)
+           </p>
+          </li>
+         </ul>
+         <p>
+          Note that this does not imply a library must have such a public user-facing
+abstraction (ex.
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            pandas.Series
+           </span>
+          </code>
+          ) - it can only be accessed via
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            __dataframe__
+           </span>
+          </code>
+          .
+         </p>
+        </li>
+        <li>
+         <p>
+          Use methods and properties on an opaque object rather than returning
+hierarchical dictionaries describing memory.
+         </p>
+         <p>
+          This is better for implementations that may rely on, for example, lazy
+computation.
+         </p>
+        </li>
+        <li>
+         <p>
+          No row names. If a library uses row names, use a regular column for them.
+         </p>
+         <p>
+          See discussion at
+          <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1/files#r394316241">
+           wesm/dataframe-protocol/pull/1
+          </a>
+          Optional row names are not a good idea, because people will assume they’re
+present (see cuDF experience, forced to add because pandas has them).
+Requiring row names seems worse than leaving them out.  Note that row labels
+could be added in the future - right now there’s no clear requirements for
+more complex row labels that cannot be represented by a single column. These
+do exist, for example Modin has has table and tree-based row labels.
+         </p>
+        </li>
+       </ol>
+       <h2 id="interface">
+        Interface
+        <a class="headerlink" href="#interface" title="Permalink to this headline">
+         ¶
+        </a>
+       </h2>
+       <div class="highlight-python notranslate">
+        <div class="highlight">
+         <pre><span></span><span class="k">class</span> <span class="nc">Buffer</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Data in the buffer is guaranteed to be contiguous in memory.</span>
+<span class="sd">    Note that there is no dtype attribute present, a buffer can be thought of</span>
+<span class="sd">    as simply a block of memory. However, if the column that the buffer is</span>
+<span class="sd">    attached to has a dtype that's supported by DLPack and ``__dlpack__`` is</span>
+<span class="sd">    implemented, then that dtype information will be contained in the return</span>
+<span class="sd">    value from ``__dlpack__``.</span>
+<span class="sd">    This distinction is useful to support both data exchange via DLPack on a</span>
+<span class="sd">    buffer and (b) dtypes like variable-length strings which do not have a</span>
+<span class="sd">    fixed number of bytes per element.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bufsize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Buffer size in bytes</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Pointer to start of the buffer as an integer</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__dlpack__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Produce DLPack capsule (see array API standard).</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            - TypeError : if the buffer contains unsupported dtypes.</span>
+<span class="sd">            - NotImplementedError : if DLPack support is not implemented</span>
+<span class="sd">        Useful to have to connect to array libraries. Support optional because</span>
+<span class="sd">        it's not completely trivial to implement for a Python-only library.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"__dlpack__"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__dlpack_device__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Device type and device ID for where the data in the buffer resides.</span>
+<span class="sd">        Uses device type codes matching DLPack. Enum members are::</span>
+<span class="sd">            - CPU = 1</span>
+<span class="sd">            - CUDA = 2</span>
+<span class="sd">            - CPU_PINNED = 3</span>
+<span class="sd">            - OPENCL = 4</span>
+<span class="sd">            - VULKAN = 7</span>
+<span class="sd">            - METAL = 8</span>
+<span class="sd">            - VPI = 9</span>
+<span class="sd">            - ROCM = 10</span>
+<span class="sd">        Note: must be implemented even if ``__dlpack__`` is not.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Column</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    A column object, with only the methods and properties required by the</span>
+<span class="sd">    interchange protocol defined.</span>
+<span class="sd">    A column can contain one or more chunks. Each chunk can contain either one</span>
+<span class="sd">    or two buffers - one data buffer and (depending on null representation) it</span>
+<span class="sd">    may have a mask buffer.</span>
+<span class="sd">    TBD: Arrow has a separate "null" dtype, and has no separate mask concept.</span>
+<span class="sd">         Instead, it seems to use "children" for both columns with a bit mask,</span>
+<span class="sd">         and for nested dtypes. Unclear whether this is elegant or confusing.</span>
+<span class="sd">         This design requires checking the null representation explicitly.</span>
+<span class="sd">         The Arrow design requires checking:</span>
+<span class="sd">         1. the ARROW_FLAG_NULLABLE (for sentinel values)</span>
+<span class="sd">         2. if a column has two children, combined with one of those children</span>
+<span class="sd">            having a null dtype.</span>
+<span class="sd">         Making the mask concept explicit seems useful. One null dtype would</span>
+<span class="sd">         not be enough to cover both bit and byte masks, so that would mean</span>
+<span class="sd">         even more checking if we did it the Arrow way.</span>
+<span class="sd">    TBD: there's also the "chunk" concept here, which is implicit in Arrow as</span>
+<span class="sd">         multiple buffers per array (= column here). Semantically it may make</span>
+<span class="sd">         sense to have both: chunks were meant for example for lazy evaluation</span>
+<span class="sd">         of data which doesn't fit in memory, while multiple buffers per column</span>
+<span class="sd">         could also come from doing a selection operation on a single</span>
+<span class="sd">         contiguous buffer.</span>
+<span class="sd">         Given these concepts, one would expect chunks to be all of the same</span>
+<span class="sd">         size (say a 10,000 row dataframe could have 10 chunks of 1,000 rows),</span>
+<span class="sd">         while multiple buffers could have data-dependent lengths. Not an issue</span>
+<span class="sd">         in pandas if one column is backed by a single NumPy array, but in</span>
+<span class="sd">         Arrow it seems possible.</span>
+<span class="sd">         Are multiple chunks *and* multiple buffers per column necessary for</span>
+<span class="sd">         the purposes of this interchange protocol, or must producers either</span>
+<span class="sd">         reuse the chunk concept for this or copy the data?</span>
+<span class="sd">    Note: this Column object can only be produced by ``__dataframe__``, so</span>
+<span class="sd">          doesn't need its own version or ``__column__`` protocol.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Size of the column, in elements.</span>
+<span class="sd">        Corresponds to DataFrame.num_rows() if column is a single chunk;</span>
+<span class="sd">        equal to size of this current chunk otherwise.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Offset of first element</span>
+<span class="sd">        May be &gt; 0 if using chunks; for example for a column with N chunks of</span>
+<span class="sd">        equal size M (only the last chunk may be shorter),</span>
+<span class="sd">        ``offset = n * M``, ``n = 0 .. N-1``.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Dtype description as a tuple ``(kind, bit-width, format string, endianness)``</span>
+<span class="sd">        Kind :</span>
+<span class="sd">            - INT = 0</span>
+<span class="sd">            - UINT = 1</span>
+<span class="sd">            - FLOAT = 2</span>
+<span class="sd">            - BOOL = 20</span>
+<span class="sd">            - STRING = 21   # UTF-8</span>
+<span class="sd">            - DATETIME = 22</span>
+<span class="sd">            - CATEGORICAL = 23</span>
+<span class="sd">        Bit-width : the number of bits as an integer</span>
+<span class="sd">        Format string : data type description format string in Apache Arrow C</span>
+<span class="sd">                        Data Interface format.</span>
+<span class="sd">        Endianness : current only native endianness (``=``) is supported</span>
+<span class="sd">        Notes:</span>
+<span class="sd">            - Kind specifiers are aligned with DLPack where possible (hence the</span>
+<span class="sd">              jump to 20, leave enough room for future extension)</span>
+<span class="sd">            - Masks must be specified as boolean with either bit width 1 (for bit</span>
+<span class="sd">              masks) or 8 (for byte masks).</span>
+<span class="sd">            - Dtype width in bits was preferred over bytes</span>
+<span class="sd">            - Endianness isn't too useful, but included now in case in the future</span>
+<span class="sd">              we need to support non-native endianness</span>
+<span class="sd">            - Went with Apache Arrow format strings over NumPy format strings</span>
+<span class="sd">              because they're more complete from a dataframe perspective</span>
+<span class="sd">            - Format strings are mostly useful for datetime specification, and</span>
+<span class="sd">              for categoricals.</span>
+<span class="sd">            - For categoricals, the format string describes the type of the</span>
+<span class="sd">              categorical in the data buffer. In case of a separate encoding of</span>
+<span class="sd">              the categorical (e.g. an integer to string mapping), this can</span>
+<span class="sd">              be derived from ``self.describe_categorical``.</span>
+<span class="sd">            - Data types not included: complex, Arrow-style null, binary, decimal,</span>
+<span class="sd">              and nested (list, struct, map, union) dtypes.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">describe_categorical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        If the dtype is categorical, there are two options:</span>
+<span class="sd">        - There are only values in the data buffer.</span>
+<span class="sd">        - There is a separate dictionary-style encoding for categorical values.</span>
+<span class="sd">        Raises RuntimeError if the dtype is not categorical</span>
+<span class="sd">        Content of returned dict:</span>
+<span class="sd">            - "is_ordered" : bool, whether the ordering of dictionary indices is</span>
+<span class="sd">                             semantically meaningful.</span>
+<span class="sd">            - "is_dictionary" : bool, whether a dictionary-style mapping of</span>
+<span class="sd">                                categorical values to other objects exists</span>
+<span class="sd">            - "mapping" : dict, Python-level only (e.g. ``{int: str}``).</span>
+<span class="sd">                          None if not a dictionary-style categorical.</span>
+<span class="sd">        TBD: are there any other in-memory representations that are needed?</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">describe_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the missing value (or "null") representation the column dtype</span>
+<span class="sd">        uses, as a tuple ``(kind, value)``.</span>
+<span class="sd">        Kind:</span>
+<span class="sd">            - 0 : non-nullable</span>
+<span class="sd">            - 1 : NaN/NaT</span>
+<span class="sd">            - 2 : sentinel value</span>
+<span class="sd">            - 3 : bit mask</span>
+<span class="sd">            - 4 : byte mask</span>
+<span class="sd">        Value : if kind is "sentinel value", the actual value. None otherwise.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">null_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Number of null elements, if known.</span>
+<span class="sd">        Note: Arrow uses -1 to indicate "unknown", but None seems cleaner.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">num_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the number of chunks the column consists of.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Column</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return an iterator yielding the chunks.</span>
+<span class="sd">        See `DataFrame.get_chunks` for details on ``n_chunks``.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_data_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Buffer</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the buffer containing the data.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Buffer</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the buffer containing the mask values indicating missing data.</span>
+<span class="sd">        Raises RuntimeError if null representation is not a bit or byte mask.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+<span class="c1">#    def get_children(self) -&gt; Iterable[Column]:</span>
+<span class="c1">#        """</span>
+<span class="c1">#        Children columns underneath the column, each object in this iterator</span>
+<span class="c1">#        must adhere to the column specification</span>
+<span class="c1">#        """</span>
+<span class="c1">#        pass</span>
+
+
+<span class="k">class</span> <span class="nc">DataFrame</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    A data frame class, with only the methods required by the interchange</span>
+<span class="sd">    protocol defined.</span>
+<span class="sd">    A "data frame" represents an ordered collection of named columns.</span>
+<span class="sd">    A column's "name" must be a unique string.</span>
+<span class="sd">    Columns may be accessed by name or by position.</span>
+<span class="sd">    This could be a public data frame class, or an object with the methods and</span>
+<span class="sd">    attributes defined on this DataFrame class could be returned from the</span>
+<span class="sd">    ``__dataframe__`` method of a public data frame class in a library adhering</span>
+<span class="sd">    to the dataframe interchange protocol specification.</span>
+<span class="sd">    """</span>
+    <span class="k">def</span> <span class="nf">__dataframe__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nan_as_null</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Produces a dictionary object following the dataframe protocol spec</span>
+<span class="sd">        ``nan_as_null`` is a keyword intended for the consumer to tell the</span>
+<span class="sd">        producer to overwrite null values in the data with ``NaN`` (or ``NaT``).</span>
+<span class="sd">        It is intended for cases where the consumer does not support the bit</span>
+<span class="sd">        mask or byte mask that is the producer's native representation.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nan_as_null</span> <span class="o">=</span> <span class="n">nan_as_null</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"dataframe"</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>  <span class="c1"># DataFrame object adhering to the protocol</span>
+            <span class="s2">"version"</span><span class="p">:</span> <span class="mi">0</span>        <span class="c1"># Version number of the protocol</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">num_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the number of columns in the DataFrame</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">num_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="c1"># TODO: not happy with Optional, but need to flag it may be expensive</span>
+        <span class="c1">#       why include it if it may be None - what do we expect consumers</span>
+        <span class="c1">#       to do here?</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the number of rows in the DataFrame, if available</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">num_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the number of chunks the DataFrame consists of</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return an iterator yielding the column names.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the column at the indicated position.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_column_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the column whose name is the indicated name.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Column</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return an iterator yielding the columns.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">select_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Create a new DataFrame by selecting a subset of columns by index</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">select_columns_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Create a new DataFrame by selecting a subset of columns by name.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return an iterator yielding the chunks.</span>
+<span class="sd">        By default (None), yields the chunks that the data is stored as by the</span>
+<span class="sd">        producer. If given, ``n_chunks`` must be a multiple of</span>
+<span class="sd">        ``self.num_chunks()``, meaning the producer must subdivide each chunk</span>
+<span class="sd">        before yielding it.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+</pre>
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </main>
+  </div>
+  <footer class="md-footer">
+   <div class="md-footer-nav">
+    <nav class="md-footer-nav__inner md-grid">
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--prev" href="design_requirements.html" rel="prev" title="The __dataframe__ protocol">
+      <div class="md-flex__cell md-flex__cell--shrink">
+       <i class="md-icon md-icon--arrow-back md-footer-nav__button">
+       </i>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+       <span class="md-flex__ellipsis">
+        <span class="md-footer-nav__direction">
+         Previous
+        </span>
+        The
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __dataframe__
+         </span>
+        </code>
+        protocol
+       </span>
+      </div>
+     </a>
+    </nav>
+   </div>
+   <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+     <div class="md-footer-copyright">
+      <div class="md-footer-copyright__highlight">
+       © Copyright 2021, Consortium for Python Data API Standards.
+      </div>
+      Created using
+      <a href="http://www.sphinx-doc.org/">
+       Sphinx
+      </a>
+      3.1.1.
+             and
+      <a href="https://github.com/bashtage/sphinx-material/">
+       Material for
+              Sphinx
+      </a>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script src="_static/javascripts/application.js">
+  </script>
+  <script>
+   app.initialize({version: "1.0.4", url: {base: ".."}})
+  </script>
+ </body>
+</html>
