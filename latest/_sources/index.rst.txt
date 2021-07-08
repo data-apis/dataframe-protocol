@@ -1,5 +1,5 @@
-Python array API standard
-=========================
+Python dataframe interchange protocol
+=====================================
 
 Contents
 --------
