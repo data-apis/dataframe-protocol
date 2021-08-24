@@ -1131,6 +1131,27 @@ constructor it needs. For example,
         </code>
         ).
        </p>
+       <p>
+        A related question is: can
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __array__
+         </span>
+        </code>
+        and/or
+        <code class="docutils literal notranslate">
+         <span class="pre">
+          __arrow_array__
+         </span>
+        </code>
+        be used at the
+column level? This is more reasonable, but probably does lead to more
+complexity for very limited gains - for an issue with discussion on that, see
+        <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/48">
+         dataframe-api/issues/48
+        </a>
+        .
+       </p>
        <h3 id="does-an-interface-describing-memory-work-for-virtual-columns">
         Does an interface describing memory work for virtual columns?
         <a class="headerlink" href="#does-an-interface-describing-memory-work-for-virtual-columns" title="Permalink to this headline">
