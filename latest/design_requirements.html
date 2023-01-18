@@ -3,6 +3,7 @@
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
   <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
@@ -39,8 +40,8 @@
   <title>
    Design concepts and requirements — Python dataframe interchange protocol 2021-DRAFT documentation
   </title>
-  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
   <link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
   <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
   <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
   </script>
@@ -49,8 +50,6 @@
   <script src="_static/underscore.js">
   </script>
   <script src="_static/doctools.js">
-  </script>
-  <script src="_static/language_data.js">
   </script>
   <script src="_static/clipboard.min.js">
   </script>
@@ -502,262 +501,266 @@
      </div>
      <div class="md-content">
       <article class="md-content__inner md-typeset" role="main">
-       <h1 id="design-requirements--page-root">
-        Design concepts and requirements
-        <a class="headerlink" href="#design-requirements--page-root" title="Permalink to this headline">
-         ¶
-        </a>
-       </h1>
-       <p>
-        This document aims to describe the design requirements and principles of the
+       <section id="design-concepts-and-requirements">
+        <h1 id="design-requirements--page-root">
+         Design concepts and requirements
+         <a class="headerlink" href="#design-requirements--page-root" title="Permalink to this headline">
+          ¶
+         </a>
+        </h1>
+        <p>
+         This document aims to describe the design requirements and principles of the
 dataframe interchange protcol, and the functionality it needs to support.
-       </p>
-       <h2 id="conceptual-model-of-a-dataframe">
-        Conceptual model of a dataframe
-        <a class="headerlink" href="#conceptual-model-of-a-dataframe" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <p>
-        For a protocol to exchange dataframes between libraries, we need both a model
+        </p>
+        <section id="conceptual-model-of-a-dataframe">
+         <h2 id="conceptual-model-of-a-dataframe">
+          Conceptual model of a dataframe
+          <a class="headerlink" href="#conceptual-model-of-a-dataframe" title="Permalink to this headline">
+           ¶
+          </a>
+         </h2>
+         <p>
+          For a protocol to exchange dataframes between libraries, we need both a model
 of what we mean by “dataframe” conceptually for the purposes of the protocol,
 and a model of how the data is represented in memory:
-       </p>
-       <p>
-        <img alt="Conceptual model of a dataframe, containing chunks, columns and 1-D arrays" src="_images/dataframe_conceptual_model.png"/>
-       </p>
-       <p>
-        The smallest building blocks are
-        <strong>
-         1-D arrays
-        </strong>
-        (or “buffers”), which are
+         </p>
+         <p>
+          <img alt="Conceptual model of a dataframe, containing chunks, columns and 1-D arrays" src="_images/dataframe_conceptual_model.png"/>
+         </p>
+         <p>
+          The smallest building blocks are
+          <strong>
+           1-D arrays
+          </strong>
+          (or “buffers”), which are
 contiguous in memory and contain data with the same dtype. A
-        <strong>
-         column
-        </strong>
-        consists of one or more 1-D arrays (if, e.g., missing data is represented with
+          <strong>
+           column
+          </strong>
+          consists of one or more 1-D arrays (if, e.g., missing data is represented with
 a boolean mask, that’s a separate array). A
-        <strong>
-         dataframe
-        </strong>
-        contains one or more columns.
+          <strong>
+           dataframe
+          </strong>
+          contains one or more columns.
 A column or a dataframe can be “chunked”; a
-        <strong>
-         chunk
-        </strong>
-        is a subset of a column
+          <strong>
+           chunk
+          </strong>
+          is a subset of a column
 or dataframe that contains a set of (neighboring) rows.
-       </p>
-       <span id="design-requirements">
-       </span>
-       <h2 id="protocol-design-requirements">
-        Protocol design requirements
-        <a class="headerlink" href="#protocol-design-requirements" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <ol>
-        <li>
-         <p>
-          Must be a standard Python-level API that is unambiguously specified, and
+         </p>
+        </section>
+        <section id="protocol-design-requirements">
+         <span id="design-requirements">
+         </span>
+         <h2 id="protocol-design-requirements">
+          Protocol design requirements
+          <a class="headerlink" href="#protocol-design-requirements" title="Permalink to this headline">
+           ¶
+          </a>
+         </h2>
+         <ol class="arabic">
+          <li>
+           <p>
+            Must be a standard Python-level API that is unambiguously specified, and
 not rely on implementation details of any particular dataframe library.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must treat dataframes as an ordered collection of columns (which are
+           </p>
+          </li>
+          <li>
+           <p>
+            Must treat dataframes as an ordered collection of columns (which are
 conceptually 1-D arrays with a dtype and missing data support).
-         </p>
-         <p>
-          <em>
-           Note: this relates to the API for
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             __dataframe__
-            </span>
-           </code>
-           , and does not imply
+           </p>
+           <p>
+            <em>
+             Note: this relates to the API for
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               __dataframe__
+              </span>
+             </code>
+             , and does not imply
 that the underlying implementation must use columnar storage!
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Must allow the consumer to select a specific set of columns for conversion.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must allow the consumer to access the following “metadata” of the dataframe:
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Must allow the consumer to select a specific set of columns for conversion.
+           </p>
+          </li>
+          <li>
+           <p>
+            Must allow the consumer to access the following “metadata” of the dataframe:
 number of rows, number of columns, column names, column data types.
-         </p>
-         <p>
-          <em>
-           Note: this implies that a data type specification needs to be created.
-          </em>
-          <em>
-           Note: column names are required; they must be strings and unique. If a
+           </p>
+           <p>
+            <em>
+             Note: this implies that a data type specification needs to be created.
+            </em>
+            <em>
+             Note: column names are required; they must be strings and unique. If a
 dataframe doesn’t have them, dummy ones like
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             '0',
-            </span>
-            <span class="pre">
-             '1',
-            </span>
-            <span class="pre">
-             ...
-            </span>
-           </code>
-           can be used.
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Must include device support.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must avoid device transfers by default (e.g. copy data from GPU to CPU),
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               '0',
+              </span>
+              <span class="pre">
+               '1',
+              </span>
+              <span class="pre">
+               ...
+              </span>
+             </code>
+             can be used.
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Must include device support.
+           </p>
+          </li>
+          <li>
+           <p>
+            Must avoid device transfers by default (e.g. copy data from GPU to CPU),
 and provide an explicit way to force such transfers (e.g. a
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            force=
-           </span>
-          </code>
-          or
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            copy=
-           </span>
-          </code>
-          keyword that the caller can set to
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            True
-           </span>
-          </code>
-          ).
-         </p>
-        </li>
-        <li>
-         <p>
-          Must be zero-copy wherever possible.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must support missing values (
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            NA
-           </span>
-          </code>
-          ) for all supported dtypes.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must supports string, categorical and datetime dtypes.
-         </p>
-        </li>
-        <li>
-         <p>
-          Must allow the consumer to inspect the representation for missing values
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              force=
+             </span>
+            </code>
+            or
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              copy=
+             </span>
+            </code>
+            keyword that the caller can set to
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              True
+             </span>
+            </code>
+            ).
+           </p>
+          </li>
+          <li>
+           <p>
+            Must be zero-copy wherever possible.
+           </p>
+          </li>
+          <li>
+           <p>
+            Must support missing values (
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              NA
+             </span>
+            </code>
+            ) for all supported dtypes.
+           </p>
+          </li>
+          <li>
+           <p>
+            Must support string, categorical and datetime dtypes.
+           </p>
+          </li>
+          <li>
+           <p>
+            Must allow the consumer to inspect the representation for missing values
 that the producer uses for each column or data type. Sentinel values,
 bit masks, and boolean masks must be supported.
 Must also be able to define whether the semantic meaning of
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            NaN
-           </span>
-          </code>
-          and
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            NaT
-           </span>
-          </code>
-          is “not-a-number/datetime” or “missing”.
-         </p>
-         <p>
-          <em>
-           Rationale: this enables the consumer to control how conversion happens,
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              NaN
+             </span>
+            </code>
+            and
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              NaT
+             </span>
+            </code>
+            is “not-a-number/datetime” or “missing”.
+           </p>
+           <p>
+            <em>
+             Rationale: this enables the consumer to control how conversion happens,
 for example if the producer uses
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             -128
-            </span>
-           </code>
-           as a sentinel value in an
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             int8
-            </span>
-           </code>
-           column while the consumer uses a separate bit mask, that information
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               -128
+              </span>
+             </code>
+             as a sentinel value in an
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               int8
+              </span>
+             </code>
+             column while the consumer uses a separate bit mask, that information
 allows the consumer to make this mapping.
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Must allow the producer to describe its memory layout in sufficient
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Must allow the producer to describe its memory layout in sufficient
 detail. In particular, for missing data and data types that may have
 multiple in-memory representations (e.g., categorical), those
 representations must all be describable in order to let the consumer map
 that to the representation it uses.
-         </p>
-         <p>
-          <em>
-           Rationale: prescribing a single in-memory representation in this
+           </p>
+           <p>
+            <em>
+             Rationale: prescribing a single in-memory representation in this
 protocol would lead to unnecessary copies being made if that represention
 isn’t the native one a library uses.
-          </em>
-         </p>
-         <p>
-          <em>
-           Note: the memory layout is columnar. Row-major dataframes can use this
+            </em>
+           </p>
+           <p>
+            <em>
+             Note: the memory layout is columnar. Row-major dataframes can use this
 protocol, but not in a zero-copy fashion (see requirement 2 above).
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Must support chunking, i.e. accessing the data in “batches” of rows.
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Must support chunking, i.e. accessing the data in “batches” of rows.
 There must be metadata the consumer can access to learn in how many
 chunks the data is stored. The consumer may also convert the data in
 more chunks than it is stored in, i.e. it can ask the producer to slice
 its columns to shorter length. That request may not be such that it would
 force the producer to concatenate data that is already stored in separate
 chunks.
-         </p>
-         <p>
-          <em>
-           Rationale: support for chunking is more efficient for libraries that
+           </p>
+           <p>
+            <em>
+             Rationale: support for chunking is more efficient for libraries that
 natively store chunks, and it is needed for dataframes that do not fit in
 memory (e.g. dataframes stored on disk or lazily evaluated).
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          May (desired, not required) support
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            __dlpack__
-           </span>
-          </code>
-          as the array interchange
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            May (desired, not required) support
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dlpack__
+             </span>
+            </code>
+            as the array interchange
 protocol at the individual buffer level for dtypes that are supported by
 DLPack.
-         </p>
-         <p>
-          <em>
-           Rationale: there is a connection between dataframe and array interchange
+           </p>
+           <p>
+            <em>
+             Rationale: there is a connection between dataframe and array interchange
 protocols. If we treat a dataframe as a set of columns which each are a set
 of 1-D arrays (there may be more than one in the case of using masks for
 missing data, or in the future for nested dtypes), it may be expected that
@@ -765,1061 +768,1085 @@ there is a connection to be made with the array data interchange method.
 The array interchange is based on DLPack; its major limitation from the
 point of view of dataframes is the lack of support of all required data
 types (string, categorical, datetime) and missing data.
-          </em>
-         </p>
-        </li>
-       </ol>
-       <p>
-        We’ll also list some things that were discussed but are not requirements:
-       </p>
-       <ol>
-        <li>
+            </em>
+           </p>
+          </li>
+         </ol>
          <p>
-          Object dtype does not need to be supported
+          We’ll also list some things that were discussed but are not requirements:
          </p>
-        </li>
-        <li>
-         <p>
-          Nested/structured dtypes within a single column does not need to be
+         <ol class="arabic">
+          <li>
+           <p>
+            Object dtype does not need to be supported
+           </p>
+          </li>
+          <li>
+           <p>
+            Nested/structured dtypes within a single column does not need to be
 supported.
-         </p>
-         <p>
-          <em>
-           Rationale: not used a lot, additional design complexity not justified.
+           </p>
+           <p>
+            <em>
+             Rationale: not used a lot, additional design complexity not justified.
 May be added in the future (does have support in the Arrow C Data
 Interface). Also note that Arrow and NumPy structured dtypes have
 different memory layouts, e.g. a
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             (float,
-            </span>
-            <span class="pre">
-             int)
-            </span>
-           </code>
-           dtype would be stored as
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               (float,
+              </span>
+              <span class="pre">
+               int)
+              </span>
+             </code>
+             dtype would be stored as
 two separate child arrays in Arrow and as a single
-           <code class="docutils literal notranslate">
-            <span class="pre">
-             f0,
-            </span>
-            <span class="pre">
-             i0,
-            </span>
-            <span class="pre">
-             f1,
-            </span>
-            <span class="pre">
-             i1,
-            </span>
-            <span class="pre">
-             ...
-            </span>
-           </code>
-           interleaved array in NumPy.
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Extension dtypes, i.e. a way to extend the set of dtypes that is
-explicitly support, are out of scope.
-         </p>
-         <p>
-          <em>
-           Rationale: complex to support, not used enough to justify that complexity.
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          Support for strided storage in buffers.
-         </p>
-         <p>
-          <em>
-           Rationale: this is supported by a subset of dataframes only, mainly those
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               f0,
+              </span>
+              <span class="pre">
+               i0,
+              </span>
+              <span class="pre">
+               f1,
+              </span>
+              <span class="pre">
+               i1,
+              </span>
+              <span class="pre">
+               ...
+              </span>
+             </code>
+             interleaved array in NumPy.
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Extension dtypes, i.e. a way to extend the set of dtypes that is
+explicitly supported, are out of scope.
+           </p>
+           <p>
+            <em>
+             Rationale: complex to support, not used enough to justify that complexity.
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            Support for strided storage in buffers.
+           </p>
+           <p>
+            <em>
+             Rationale: this is supported by a subset of dataframes only, mainly those
 that use NumPy arrays. In many real-world use cases, strided arrays will
 force a copy at some point, so requiring contiguous memory layout (and hence
 an extra copy at the moment
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               __dataframe__
+              </span>
+             </code>
+             is used) is considered a good
+trade-off for reduced implementation complexity.
+            </em>
+           </p>
+          </li>
+          <li>
+           <p>
+            “virtual columns”, i.e. columns for which the data is not yet in memory
+because it uses lazy evaluation, are not supported other than through
+letting the producer materialize the data in memory when the consumer
+calls
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            .
+           </p>
+           <p>
+            <em>
+             Rationale: the full dataframe API will support this use case by
+“programming to an interface”; this data interchange protocol is
+fundamentally built around describing data in memory
+            </em>
+            .
+           </p>
+          </li>
+         </ol>
+         <section id="to-be-decided">
+          <h3 id="to-be-decided">
+           To be decided
+           <a class="headerlink" href="#to-be-decided" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           <em>
+            Should there be a standard
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              from_dataframe
+             </span>
+            </code>
+            constructor function?
+           </em>
+           This
+isn’t completely necessary, however it’s expected that a full dataframe API
+standard will have such a function. The array API standard also has such a
+function, namely
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             from_dlpack
+            </span>
+           </code>
+           . Adding at least a recommendation on syntax
+for this function makes sense, e.g., simply
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             from_dataframe(df)
+            </span>
+           </code>
+           .
+Discussion at
+           <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-685903651">
+            dataframe-api/issues/29
+           </a>
+           is relevant.
+          </p>
+         </section>
+        </section>
+        <section id="frequently-asked-questions">
+         <h2 id="frequently-asked-questions">
+          Frequently asked questions
+          <a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">
+           ¶
+          </a>
+         </h2>
+         <section id="can-the-arrow-c-data-interface-be-used-for-this">
+          <h3 id="can-the-arrow-c-data-interface-be-used-for-this">
+           Can the Arrow C Data Interface be used for this?
+           <a class="headerlink" href="#can-the-arrow-c-data-interface-be-used-for-this" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           What we are aiming for is quite similar to the Arrow C Data Interface (see
+the
+           <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html#rationale">
+            rationale for the Arrow C Data Interface
+           </a>
+           ),
+except
            <code class="docutils literal notranslate">
             <span class="pre">
              __dataframe__
             </span>
            </code>
-           is used) is considered a good
-trade-off for reduced implementation complexity.
-          </em>
-         </p>
-        </li>
-        <li>
-         <p>
-          “virtual columns”, i.e. columns for which the data is not yet in memory
-because it uses lazy evaluation, are not supported other than through
-letting the producer materialize the data in memory when the consumer
-calls
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            __dataframe__
-           </span>
-          </code>
-          .
-         </p>
-         <p>
-          <em>
-           Rationale: the full dataframe API will support this use case by
-“programming to an interface”; this data interchange protocol is
-fundamentally built around describing data in memory
-          </em>
-          .
-         </p>
-        </li>
-       </ol>
-       <h3 id="to-be-decided">
-        To be decided
-        <a class="headerlink" href="#to-be-decided" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        <em>
-         Should there be a standard
-         <code class="docutils literal notranslate">
-          <span class="pre">
-           from_dataframe
-          </span>
-         </code>
-         constructor function?
-        </em>
-        This
-isn’t completely necessary, however it’s expected that a full dataframe API
-standard will have such a function. The array API standard also has such a
-function, namely
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          from_dlpack
-         </span>
-        </code>
-        . Adding at least a recommendation on syntax
-for this function makes sense, e.g., simply
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          from_dataframe(df)
-         </span>
-        </code>
-        .
-Discussion at
-        <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-685903651">
-         dataframe-api/issues/29
-        </a>
-        is relevant.
-       </p>
-       <h2 id="frequently-asked-questions">
-        Frequently asked questions
-        <a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <h3 id="can-the-arrow-c-data-interface-be-used-for-this">
-        Can the Arrow C Data Interface be used for this?
-        <a class="headerlink" href="#can-the-arrow-c-data-interface-be-used-for-this" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        What we are aiming for is quite similar to the Arrow C Data Interface (see
-the
-        <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html#rationale">
-         rationale for the Arrow C Data Interface
-        </a>
-        ),
-except
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        is a Python-level rather than C-level interface.
+           is a Python-level rather than C-level interface.
 The data types format specification of that interface is something that could
 be used unchanged.
-       </p>
-       <p>
-        The main limitation seems to be that Arrow does not have device support
+          </p>
+          <p>
+           The main limitation seems to be that Arrow does not have device support
 –
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          @kkraus14
-         </span>
-        </code>
-        will bring this up on the Arrow dev mailing list. Another
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             @kkraus14
+            </span>
+           </code>
+           will bring this up on the Arrow dev mailing list. Another
 identified issue is that the “deleter” on the Arrow C struct is present at the
 column level, and there are use cases for having it at the buffer level
 (mixed-device dataframes, more granular control over memory).
-       </p>
-       <p>
-        Note that categoricals are supported, Arrow uses the phrasing
+          </p>
+          <p>
+           Note that categoricals are supported, Arrow uses the phrasing
 “dictionary-encoded types” for categorical. Also, what it calls “array” means
 “column” in the terminology of this document (and every Python dataframe
 library).
-       </p>
-       <p>
-        The Arrow C Data Interface says specifically it was inspired by
-        <a class="reference external" href="https://docs.python.org/3/c-api/buffer.html">
-         Python’s
+          </p>
+          <p>
+           The Arrow C Data Interface says specifically it was inspired by
+           <a class="reference external" href="https://docs.python.org/3/c-api/buffer.html">
+            Python’s
 buffer protocol
-        </a>
-        , which is also
+           </a>
+           , which is also
 a C-only and CPU-only interface. See
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array_interface__
-         </span>
-        </code>
-        below for a
-Python-level equivalent of the buffer protocol.
-       </p>
-       <p>
-        Note that specifying the precise semantics for implementers (both producing
-and consuming libraries) will be important. The Arrow C Data interface relies
-on providing a deletion / finalization method similar to DLPack. The desired
-semantics here need to be ironed out. See Arrow docs on
-        <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html#release-callback-semantics-for-consumers">
-         release callback semantics
-        </a>
-        .
-       </p>
-       <h3 id="is-dataframe-analogous-to-array-or-array-interface">
-        Is
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        analogous to
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        or
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array_interface__
-         </span>
-        </code>
-        ?
-        <a class="headerlink" href="#is-dataframe-analogous-to-array-or-array-interface" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        Yes, it is fairly analogous to
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array_interface__
-         </span>
-        </code>
-        . There will be some
-differences though, for example
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array_interface__
-         </span>
-        </code>
-        doesn’t know about
-devices, and it’s a
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          dict
-         </span>
-        </code>
-        with a pointer to memory so there’s an assumption
-that the data lives in CPU memory (which may not be true, e.g. in the case of
-cuDF or Vaex).
-       </p>
-       <p>
-        It is
-        <em>
-         not
-        </em>
-        analogous to
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        , which is NumPy-specific.
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        is a
-method attached to array/tensor-like objects, and calling it is requesting
-the object it’s attached to to turn itself into a NumPy array. Hence, the
-library that implements
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        must depend (optionally at least) on
-NumPy, and call a NumPy
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          ndarray
-         </span>
-        </code>
-        constructor itself from within
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        .
-       </p>
-       <h3 id="what-is-wrong-with-to-numpy-and-to-arrow">
-        What is wrong with
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          .to_numpy?
-         </span>
-        </code>
-        and
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          .to_arrow()
-         </span>
-        </code>
-        ?
-        <a class="headerlink" href="#what-is-wrong-with-to-numpy-and-to-arrow" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        Such methods ask the object it is attached to to turn itself into a NumPy or
-Arrow array. Which means each library must have at least an optional
-dependency on NumPy and on Arrow if it implements those methods. This leads
-to unnecessary coupling between libraries, and hence is a suboptimal choice -
-we’d like to avoid this if we can.
-       </p>
-       <p>
-        Instead, it should be dataframe consumers that rely on NumPy or Arrow, since
-they are the ones that need such a particular format. So, it can call the
-constructor it needs. For example,
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          x
-         </span>
-         <span class="pre">
-          =
-         </span>
-         <span class="pre">
-          np.asarray(df['colname'])
-         </span>
-        </code>
-        (where
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          df
-         </span>
-        </code>
-        supports
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        ).
-       </p>
-       <p>
-        A related question is: can
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __array__
-         </span>
-        </code>
-        and/or
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __arrow_array__
-         </span>
-        </code>
-        be used at the
-column level? This is more reasonable, but probably does lead to more
-complexity for very limited gains - for an issue with discussion on that, see
-        <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/48">
-         dataframe-api/issues/48
-        </a>
-        .
-       </p>
-       <h3 id="does-an-interface-describing-memory-work-for-virtual-columns">
-        Does an interface describing memory work for virtual columns?
-        <a class="headerlink" href="#does-an-interface-describing-memory-work-for-virtual-columns" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        Vaex is an example of a library that can have “virtual columns” (see
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          @maartenbreddels
-         </span>
-        </code>
-        <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-686373569">
-         comment here
-        </a>
-        ).
-If the protocol includes a description of data layout in memory, does that
-work for such a virtual column?
-       </p>
-       <p>
-        Yes. Virtual columns need to be materialized in memory before they can be
-turned into a column for a different type of dataframe - that will be true
-for every discussed form of the protocol; whether there’s a
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          to_arrow()
-         </span>
-        </code>
-        or
-something else does not matter. Vaex can choose
-        <em>
-         how
-        </em>
-        to materialize (e.g.,
-to an Arrow array, a NumPy array, or a raw memory buffer) - as long as the
-returned description of memory layout is valid, all those options can later
-be turned into the desired column format without a data copy, so the
-implementation choice here really doesn’t matter much.
-       </p>
-       <p>
-        <em>
-         Note: the above statement on materialization assumes that there are many
-forms a virtual column can be implemented, and that those are all
-custom/different and that at this point it makes little sense to standardize
-that. For example, one could do this with a simple string DSL (
-         <code class="docutils literal notranslate">
-          <span class="pre">
-           'col_C
-          </span>
-          <span class="pre">
-           =
-          </span>
-          <span class="pre">
-           col_A
-          </span>
-          <span class="pre">
-           +
-          </span>
-          <span class="pre">
-           col_B'
-          </span>
-         </code>
-         , with a fancier C++-style lazy evaluation, with a
-computational graph approach like Dask uses, etc.).
-        </em>
-       </p>
-       <h2 id="possible-direction-for-implementation">
-        Possible direction for implementation
-        <a class="headerlink" href="#possible-direction-for-implementation" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <h3 id="rough-initial-prototypes-historical">
-        Rough initial prototypes (historical)
-        <a class="headerlink" href="#rough-initial-prototypes-historical" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        The
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          cuDFDataFrame
-         </span>
-        </code>
-        ,
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          cuDFColumn
-         </span>
-        </code>
-        and
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          cuDFBuffer
-         </span>
-        </code>
-        sketched out by @kkraus14
-        <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-685123386">
-         here
-        </a>
-        looked like it was in the right direction.
-       </p>
-       <p>
-        <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1">
-         This prototype
-        </a>
-        by Wes
-McKinney was the first attempt, and has some useful features.
-       </p>
-       <h3 id="relevant-existing-protocols">
-        Relevant existing protocols
-        <a class="headerlink" href="#relevant-existing-protocols" title="Permalink to this headline">
-         ¶
-        </a>
-       </h3>
-       <p>
-        Here are the four most relevant existing protocols, and what requirements they support:
-       </p>
-       <table border="1">
-        <thead>
-         <tr>
-          <th>
-           <em>
-            supports
-           </em>
-          </th>
-          <th align="center">
-           buffer protocol
-          </th>
-          <th align="center">
-           <code>
-            __array_interface__
-           </code>
-          </th>
-          <th align="center">
-           DLPack
-          </th>
-          <th align="center">
-           Arrow C Data Interface
-          </th>
-         </tr>
-        </thead>
-        <tbody>
-         <tr>
-          <td>
-           Python API
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           (1)
-          </td>
-          <td align="center">
-          </td>
-         </tr>
-         <tr>
-          <td>
-           C API
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           arrays
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           dataframes
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-         </tr>
-         <tr>
-          <td>
-           chunking
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-         </tr>
-         <tr>
-          <td>
-           devices
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-          </td>
-         </tr>
-         <tr>
-          <td>
-           bool/int/uint/float
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           missing data
-          </td>
-          <td align="center">
-           (2)
-          </td>
-          <td align="center">
-           (3)
-          </td>
-          <td align="center">
-           (4)
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           string dtype
-          </td>
-          <td align="center">
-           (4)
-          </td>
-          <td align="center">
-           (4)
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           datetime dtypes
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           (5)
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           categoricals
-          </td>
-          <td align="center">
-           (6)
-          </td>
-          <td align="center">
-           (6)
-          </td>
-          <td align="center">
-           (7)
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-        </tbody>
-       </table>
-       <ol class="simple">
-        <li>
-         <p>
-          The Python API is only an interface to call the C API under the hood, it
-doesn’t contain a description of how the data is laid out in memory.
-         </p>
-        </li>
-        <li>
-         <p>
-          Can be done only via separate masks of boolean arrays.
-         </p>
-        </li>
-        <li>
-         <p>
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            __array_interface__
-           </span>
-          </code>
-          has a
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            mask
-           </span>
-          </code>
-          attribute, which is a separate boolean array also implementing the
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            __array_interface__
-           </span>
-          </code>
-          protocol.
-         </p>
-        </li>
-        <li>
-         <p>
-          Only fixed-length strings as sequence of char or unicode.
-         </p>
-        </li>
-        <li>
-         <p>
-          Only NumPy datetime and timedelta, not timezones. For the purpose of data
-interchange, timezones could be represented separately in metadata if
-desired.
-         </p>
-        </li>
-        <li>
-         <p>
-          No explicit support, however categoricals can be mapped to either integers
-or strings. Unclear how to communicate that information from producer to consumer.
-         </p>
-        </li>
-        <li>
-         <p>
-          No explicit support, categoricals can only be mapped to integers.
-         </p>
-        </li>
-       </ol>
-       <table border="1">
-        <thead>
-         <tr>
-          <th>
-           <em>
-            implementation
-           </em>
-          </th>
-          <th align="center">
-           buffer protocol
-          </th>
-          <th align="center">
-           <code>
-            __array_interface__
-           </code>
-          </th>
-          <th align="center">
-           DLPack
-          </th>
-          <th align="center">
-           Arrow C Data Interface
-          </th>
-         </tr>
-        </thead>
-        <tbody>
-         <tr>
-          <td>
-           refcounting
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-         </tr>
-         <tr>
-          <td>
-           call deleter
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-          </td>
-          <td align="center">
-           Y
-          </td>
-          <td align="center">
-           Y
-          </td>
-         </tr>
-         <tr>
-          <td>
-           supporting C code
-          </td>
-          <td align="center">
-           in CPython
-          </td>
-          <td align="center">
-           in NumPy
-          </td>
-          <td align="center">
-           spec-only
-          </td>
-          <td align="center">
-           spec-only
-          </td>
-         </tr>
-        </tbody>
-       </table>
-       <p>
-        It is worth noting that for all four protocols, both dataframes and chunking
-can be easily layered on top. However only arrays, which are the only parts
-that have a specific memory layout, are explicitly specified in all those
-protocols. For Arrow this would be a little easier than for other protocols
-given the inclusion of “children” and “dictionary-encoded types”, and indeed
-PyArrow already does provide such functionality.
-       </p>
-       <h4 id="data-type-descriptions">
-        Data type descriptions
-        <a class="headerlink" href="#data-type-descriptions" title="Permalink to this headline">
-         ¶
-        </a>
-       </h4>
-       <p>
-        There are multiple options for how to specify the dtype. The buffer protocol,
-NumPy and Arrow use format strings, DLPack uses enums. Furthermore dtype
-literals can be used for a Python API; this is what the array API standard
-does. Here are some examples:
-       </p>
-       <table border="1">
-        <thead>
-         <tr>
-          <th>
-           <em>
-            dtype
-           </em>
-          </th>
-          <th align="center">
-           buffer protocol
-          </th>
-          <th align="center">
-           <code>
-            __array_interface__
-           </code>
-          </th>
-          <th align="center">
-           DLPack
-          </th>
-          <th align="center">
-           Arrow C Data Interface
-          </th>
-         </tr>
-        </thead>
-        <tbody>
-         <tr>
-          <td>
-           int8
-          </td>
-          <td align="center">
-           <code>
-            '=b'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'i1'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            (0, 8)
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'c'
-           </code>
-          </td>
-         </tr>
-         <tr>
-          <td>
-           int32
-          </td>
-          <td align="center">
-           <code>
-            =i'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'i4'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            (0, 32)
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'i'
-           </code>
-          </td>
-         </tr>
-         <tr>
-          <td>
-           float64
-          </td>
-          <td align="center">
-           <code>
-            '=d'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            '&lt;f8'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            (2, 64)
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'g'
-           </code>
-          </td>
-         </tr>
-         <tr>
-          <td>
-           utf-8 string
-          </td>
-          <td align="center">
-           <code>
-            'u'
-           </code>
-           or
-           <code>
-            'w'
-           </code>
-          </td>
-          <td align="center">
-           <code>
-            'U'
-           </code>
-          </td>
-          <td align="center">
-           n.a.
-          </td>
-          <td align="center">
-           <code>
-            'u'
-           </code>
-          </td>
-         </tr>
-        </tbody>
-       </table>
-       <p>
-        The
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          =
-         </span>
-        </code>
-        ,
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          &lt;
-         </span>
-        </code>
-        ,
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          &gt;
-         </span>
-        </code>
-        are denoting endianness; Arrow only supports native endianness.
-       </p>
-       <h2 id="references">
-        References
-        <a class="headerlink" href="#references" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <ul class="simple">
-        <li>
-         <p>
-          <a class="reference external" href="https://docs.python.org/3/c-api/buffer.html">
-           Python buffer protocol
-          </a>
-         </p>
-        </li>
-        <li>
-         <p>
-          <a class="reference external" href="https://numpy.org/devdocs/reference/arrays.interface.html">
            <code class="docutils literal notranslate">
             <span class="pre">
              __array_interface__
             </span>
            </code>
-           protocol
+           below for a
+Python-level equivalent of the buffer protocol.
+          </p>
+          <p>
+           Note that specifying the precise semantics for implementers (both producing
+and consuming libraries) will be important. The Arrow C Data interface relies
+on providing a deletion / finalization method similar to DLPack. The desired
+semantics here need to be ironed out. See Arrow docs on
+           <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html#release-callback-semantics-for-consumers">
+            release callback semantics
+           </a>
+           .
+          </p>
+         </section>
+         <section id="is-dataframe-analogous-to-array-or-array-interface">
+          <h3 id="is-dataframe-analogous-to-array-or-array-interface">
+           Is
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __dataframe__
+            </span>
+           </code>
+           analogous to
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           or
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array_interface__
+            </span>
+           </code>
+           ?
+           <a class="headerlink" href="#is-dataframe-analogous-to-array-or-array-interface" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           Yes, it is fairly analogous to
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array_interface__
+            </span>
+           </code>
+           . There will be some
+differences though, for example
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array_interface__
+            </span>
+           </code>
+           doesn’t know about
+devices, and it’s a
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             dict
+            </span>
+           </code>
+           with a pointer to memory so there’s an assumption
+that the data lives in CPU memory (which may not be true, e.g. in the case of
+cuDF or Vaex).
+          </p>
+          <p>
+           It is
+           <em>
+            not
+           </em>
+           analogous to
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           , which is NumPy-specific.
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           is a
+method attached to array/tensor-like objects, and calling it is requesting
+the object it’s attached to to turn itself into a NumPy array. Hence, the
+library that implements
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           must depend (optionally at least) on
+NumPy, and call a NumPy
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             ndarray
+            </span>
+           </code>
+           constructor itself from within
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           .
+          </p>
+         </section>
+         <section id="what-is-wrong-with-to-numpy-and-to-arrow">
+          <h3 id="what-is-wrong-with-to-numpy-and-to-arrow">
+           What is wrong with
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             .to_numpy?
+            </span>
+           </code>
+           and
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             .to_arrow()
+            </span>
+           </code>
+           ?
+           <a class="headerlink" href="#what-is-wrong-with-to-numpy-and-to-arrow" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           Such methods ask the object it is attached to to turn itself into a NumPy or
+Arrow array. Which means each library must have at least an optional
+dependency on NumPy and on Arrow if it implements those methods. This leads
+to unnecessary coupling between libraries, and hence is a suboptimal choice -
+we’d like to avoid this if we can.
+          </p>
+          <p>
+           Instead, it should be dataframe consumers that rely on NumPy or Arrow, since
+they are the ones that need such a particular format. So, it can call the
+constructor it needs. For example,
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             x
+            </span>
+            <span class="pre">
+             =
+            </span>
+            <span class="pre">
+             np.asarray(df['colname'])
+            </span>
+           </code>
+           (where
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             df
+            </span>
+           </code>
+           supports
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __dataframe__
+            </span>
+           </code>
+           ).
+          </p>
+          <p>
+           A related question is: can
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __array__
+            </span>
+           </code>
+           and/or
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             __arrow_array__
+            </span>
+           </code>
+           be used at the
+column level? This is more reasonable, but probably does lead to more
+complexity for very limited gains - for an issue with discussion on that, see
+           <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/48">
+            dataframe-api/issues/48
+           </a>
+           .
+          </p>
+         </section>
+         <section id="does-an-interface-describing-memory-work-for-virtual-columns">
+          <h3 id="does-an-interface-describing-memory-work-for-virtual-columns">
+           Does an interface describing memory work for virtual columns?
+           <a class="headerlink" href="#does-an-interface-describing-memory-work-for-virtual-columns" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           Vaex is an example of a library that can have “virtual columns” (see
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             @maartenbreddels
+            </span>
+           </code>
+           <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-686373569">
+            comment here
+           </a>
+           ).
+If the protocol includes a description of data layout in memory, does that
+work for such a virtual column?
+          </p>
+          <p>
+           Yes. Virtual columns need to be materialized in memory before they can be
+turned into a column for a different type of dataframe - that will be true
+for every discussed form of the protocol; whether there’s a
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             to_arrow()
+            </span>
+           </code>
+           or
+something else does not matter. Vaex can choose
+           <em>
+            how
+           </em>
+           to materialize (e.g.,
+to an Arrow array, a NumPy array, or a raw memory buffer) - as long as the
+returned description of memory layout is valid, all those options can later
+be turned into the desired column format without a data copy, so the
+implementation choice here really doesn’t matter much.
+          </p>
+          <p>
+           <em>
+            Note: the above statement on materialization assumes that there are many
+forms a virtual column can be implemented, and that those are all
+custom/different and that at this point it makes little sense to standardize
+that. For example, one could do this with a simple string DSL (
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              'col_C
+             </span>
+             <span class="pre">
+              =
+             </span>
+             <span class="pre">
+              col_A
+             </span>
+             <span class="pre">
+              +
+             </span>
+             <span class="pre">
+              col_B'
+             </span>
+            </code>
+            , with a fancier C++-style lazy evaluation, with a
+computational graph approach like Dask uses, etc.).
+           </em>
+          </p>
+         </section>
+        </section>
+        <section id="possible-direction-for-implementation">
+         <h2 id="possible-direction-for-implementation">
+          Possible direction for implementation
+          <a class="headerlink" href="#possible-direction-for-implementation" title="Permalink to this headline">
+           ¶
           </a>
-         </p>
-        </li>
-        <li>
-         <p>
-          <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html">
-           Arrow C Data Interface
+         </h2>
+         <section id="rough-initial-prototypes-historical">
+          <h3 id="rough-initial-prototypes-historical">
+           Rough initial prototypes (historical)
+           <a class="headerlink" href="#rough-initial-prototypes-historical" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           The
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             cuDFDataFrame
+            </span>
+           </code>
+           ,
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             cuDFColumn
+            </span>
+           </code>
+           and
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             cuDFBuffer
+            </span>
+           </code>
+           sketched out by @kkraus14
+           <a class="reference external" href="https://github.com/data-apis/dataframe-api/issues/29#issuecomment-685123386">
+            here
+           </a>
+           looked like it was in the right direction.
+          </p>
+          <p>
+           <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1">
+            This prototype
+           </a>
+           by Wes
+McKinney was the first attempt, and has some useful features.
+          </p>
+         </section>
+         <section id="relevant-existing-protocols">
+          <h3 id="relevant-existing-protocols">
+           Relevant existing protocols
+           <a class="headerlink" href="#relevant-existing-protocols" title="Permalink to this headline">
+            ¶
+           </a>
+          </h3>
+          <p>
+           Here are the four most relevant existing protocols, and what requirements they support:
+          </p>
+          <table border="1">
+           <thead>
+            <tr>
+             <th>
+              <em>
+               supports
+              </em>
+             </th>
+             <th style="text-align: center;">
+              buffer protocol
+             </th>
+             <th style="text-align: center;">
+              <code>
+               __array_interface__
+              </code>
+             </th>
+             <th style="text-align: center;">
+              DLPack
+             </th>
+             <th style="text-align: center;">
+              Arrow C Data Interface
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              Python API
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              (1)
+             </td>
+             <td style="text-align: center;">
+             </td>
+            </tr>
+            <tr>
+             <td>
+              C API
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              arrays
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              dataframes
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+            </tr>
+            <tr>
+             <td>
+              chunking
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+            </tr>
+            <tr>
+             <td>
+              devices
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+             </td>
+            </tr>
+            <tr>
+             <td>
+              bool/int/uint/float
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              missing data
+             </td>
+             <td style="text-align: center;">
+              (2)
+             </td>
+             <td style="text-align: center;">
+              (3)
+             </td>
+             <td style="text-align: center;">
+              (4)
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              string dtype
+             </td>
+             <td style="text-align: center;">
+              (4)
+             </td>
+             <td style="text-align: center;">
+              (4)
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              datetime dtypes
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              (5)
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              categoricals
+             </td>
+             <td style="text-align: center;">
+              (6)
+             </td>
+             <td style="text-align: center;">
+              (6)
+             </td>
+             <td style="text-align: center;">
+              (7)
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+           </tbody>
+          </table>
+          <ol class="arabic simple">
+           <li>
+            <p>
+             The Python API is only an interface to call the C API under the hood, it
+doesn’t contain a description of how the data is laid out in memory.
+            </p>
+           </li>
+           <li>
+            <p>
+             Can be done only via separate masks of boolean arrays.
+            </p>
+           </li>
+           <li>
+            <p>
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               __array_interface__
+              </span>
+             </code>
+             has a
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               mask
+              </span>
+             </code>
+             attribute, which is a separate boolean array also implementing the
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               __array_interface__
+              </span>
+             </code>
+             protocol.
+            </p>
+           </li>
+           <li>
+            <p>
+             Only fixed-length strings as sequence of char or unicode.
+            </p>
+           </li>
+           <li>
+            <p>
+             Only NumPy datetime and timedelta, not timezones. For the purpose of data
+interchange, timezones could be represented separately in metadata if
+desired.
+            </p>
+           </li>
+           <li>
+            <p>
+             No explicit support, however categoricals can be mapped to either integers
+or strings. Unclear how to communicate that information from producer to consumer.
+            </p>
+           </li>
+           <li>
+            <p>
+             No explicit support, categoricals can only be mapped to integers.
+            </p>
+           </li>
+          </ol>
+          <table border="1">
+           <thead>
+            <tr>
+             <th>
+              <em>
+               implementation
+              </em>
+             </th>
+             <th style="text-align: center;">
+              buffer protocol
+             </th>
+             <th style="text-align: center;">
+              <code>
+               __array_interface__
+              </code>
+             </th>
+             <th style="text-align: center;">
+              DLPack
+             </th>
+             <th style="text-align: center;">
+              Arrow C Data Interface
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              refcounting
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+            </tr>
+            <tr>
+             <td>
+              call deleter
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+             <td style="text-align: center;">
+              Y
+             </td>
+            </tr>
+            <tr>
+             <td>
+              supporting C code
+             </td>
+             <td style="text-align: center;">
+              in CPython
+             </td>
+             <td style="text-align: center;">
+              in NumPy
+             </td>
+             <td style="text-align: center;">
+              spec-only
+             </td>
+             <td style="text-align: center;">
+              spec-only
+             </td>
+            </tr>
+           </tbody>
+          </table>
+          <p>
+           It is worth noting that for all four protocols, both dataframes and chunking
+can be easily layered on top. However only arrays, which are the only parts
+that have a specific memory layout, are explicitly specified in all those
+protocols. For Arrow this would be a little easier than for other protocols
+given the inclusion of “children” and “dictionary-encoded types”, and indeed
+PyArrow already does provide such functionality.
+          </p>
+          <section id="data-type-descriptions">
+           <h4 id="data-type-descriptions">
+            Data type descriptions
+            <a class="headerlink" href="#data-type-descriptions" title="Permalink to this headline">
+             ¶
+            </a>
+           </h4>
+           <p>
+            There are multiple options for how to specify the dtype. The buffer protocol,
+NumPy and Arrow use format strings, DLPack uses enums. Furthermore dtype
+literals can be used for a Python API; this is what the array API standard
+does. Here are some examples:
+           </p>
+           <table border="1">
+            <thead>
+             <tr>
+              <th>
+               <em>
+                dtype
+               </em>
+              </th>
+              <th style="text-align: center;">
+               buffer protocol
+              </th>
+              <th style="text-align: center;">
+               <code>
+                __array_interface__
+               </code>
+              </th>
+              <th style="text-align: center;">
+               DLPack
+              </th>
+              <th style="text-align: center;">
+               Arrow C Data Interface
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td>
+               int8
+              </td>
+              <td style="text-align: center;">
+               <code>
+                '=b'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'i1'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                (0, 8)
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'c'
+               </code>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               int32
+              </td>
+              <td style="text-align: center;">
+               <code>
+                =i'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'i4'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                (0, 32)
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'i'
+               </code>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               float64
+              </td>
+              <td style="text-align: center;">
+               <code>
+                '=d'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                '&lt;f8'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                (2, 64)
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'g'
+               </code>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               utf-8 string
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'u'
+               </code>
+               or
+               <code>
+                'w'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'U'
+               </code>
+              </td>
+              <td style="text-align: center;">
+               n.a.
+              </td>
+              <td style="text-align: center;">
+               <code>
+                'u'
+               </code>
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <p>
+            The
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              =
+             </span>
+            </code>
+            ,
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              &lt;
+             </span>
+            </code>
+            ,
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              &gt;
+             </span>
+            </code>
+            are denoting endianness; Arrow only supports native endianness.
+           </p>
+          </section>
+         </section>
+        </section>
+        <section id="references">
+         <h2 id="references">
+          References
+          <a class="headerlink" href="#references" title="Permalink to this headline">
+           ¶
           </a>
-         </p>
-        </li>
-        <li>
-         <p>
-          <a class="reference external" href="https://github.com/dmlc/dlpack">
-           DLPack
-          </a>
-         </p>
-        </li>
-        <li>
-         <p>
-          <a class="reference external" href="https://data-apis.github.io/array-api/latest/design_topics/data_interchange.html">
-           Array data interchange in API standard
-          </a>
-         </p>
-        </li>
-       </ul>
+         </h2>
+         <ul class="simple">
+          <li>
+           <p>
+            <a class="reference external" href="https://docs.python.org/3/c-api/buffer.html">
+             Python buffer protocol
+            </a>
+           </p>
+          </li>
+          <li>
+           <p>
+            <a class="reference external" href="https://numpy.org/devdocs/reference/arrays.interface.html">
+             <code class="docutils literal notranslate">
+              <span class="pre">
+               __array_interface__
+              </span>
+             </code>
+             protocol
+            </a>
+           </p>
+          </li>
+          <li>
+           <p>
+            <a class="reference external" href="https://arrow.apache.org/docs/format/CDataInterface.html">
+             Arrow C Data Interface
+            </a>
+           </p>
+          </li>
+          <li>
+           <p>
+            <a class="reference external" href="https://github.com/dmlc/dlpack">
+             DLPack
+            </a>
+           </p>
+          </li>
+          <li>
+           <p>
+            <a class="reference external" href="https://data-apis.github.io/array-api/latest/design_topics/data_interchange.html">
+             Array data interchange in API standard
+            </a>
+           </p>
+          </li>
+         </ul>
+        </section>
+       </section>
       </article>
      </div>
     </div>
@@ -1874,7 +1901,7 @@ does. Here are some examples:
       <a href="http://www.sphinx-doc.org/">
        Sphinx
       </a>
-      3.1.1.
+      4.3.0.
              and
       <a href="https://github.com/bashtage/sphinx-material/">
        Material for

@@ -3,6 +3,7 @@
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
   <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
@@ -39,8 +40,8 @@
   <title>
    API of the __dataframe__ protocol — Python dataframe interchange protocol 2021-DRAFT documentation
   </title>
-  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
   <link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
   <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
   <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
   </script>
@@ -49,8 +50,6 @@
   <script src="_static/underscore.js">
   </script>
   <script src="_static/doctools.js">
-  </script>
-  <script src="_static/language_data.js">
   </script>
   <script src="_static/clipboard.min.js">
   </script>
@@ -317,286 +316,407 @@
      </div>
      <div class="md-content">
       <article class="md-content__inner md-typeset" role="main">
-       <h1 id="api--page-root">
-        API of the
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        protocol
-        <a class="headerlink" href="#api--page-root" title="Permalink to this headline">
-         ¶
-        </a>
-       </h1>
-       <p>
-        Specification for objects to be accessed, for the purpose of dataframe
+       <section id="api-of-the-dataframe-protocol">
+        <h1 id="api--page-root">
+         API of the
+         <code class="docutils literal notranslate">
+          <span class="pre">
+           __dataframe__
+          </span>
+         </code>
+         protocol
+         <a class="headerlink" href="#api--page-root" title="Permalink to this headline">
+          ¶
+         </a>
+        </h1>
+        <p>
+         Specification for objects to be accessed, for the purpose of dataframe
 interchange between libraries, via the
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        method on a libraries’
+         <code class="docutils literal notranslate">
+          <span class="pre">
+           __dataframe__
+          </span>
+         </code>
+         method on a libraries’
 data frame object.
-       </p>
-       <p>
-        For guiding requirements, see
-        <a class="reference internal" href="design_requirements.html#design-requirements">
-         <span class="std std-ref">
-          Protocol design requirements
-         </span>
-        </a>
-        .
-       </p>
-       <h2 id="concepts-in-this-design">
-        Concepts in this design
-        <a class="headerlink" href="#concepts-in-this-design" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <ol class="simple">
-        <li>
-         <p>
-          A
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            Buffer
-           </span>
-          </code>
-          class. A
-          <em>
-           buffer
-          </em>
-          is a contiguous block of memory - this is the
+        </p>
+        <p>
+         For guiding requirements, see
+         <a class="reference internal" href="design_requirements.html#design-requirements">
+          <span class="std std-ref">
+           Protocol design requirements
+          </span>
+         </a>
+         .
+        </p>
+        <section id="concepts-in-this-design">
+         <h2 id="concepts-in-this-design">
+          Concepts in this design
+          <a class="headerlink" href="#concepts-in-this-design" title="Permalink to this headline">
+           ¶
+          </a>
+         </h2>
+         <ol class="arabic simple">
+          <li>
+           <p>
+            A
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              Buffer
+             </span>
+            </code>
+            class. A
+            <em>
+             buffer
+            </em>
+            is a contiguous block of memory - this is the
 only thing that actually maps to a 1-D array in a sense that it could be
 converted to NumPy, CuPy, et al.
-         </p>
-        </li>
-        <li>
-         <p>
-          A
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            Column
-           </span>
-          </code>
-          class. A
-          <em>
-           column
-          </em>
-          has a single dtype. It can consist
+           </p>
+          </li>
+          <li>
+           <p>
+            A
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              Column
+             </span>
+            </code>
+            class. A
+            <em>
+             column
+            </em>
+            has a single dtype. It can consist
 of multiple
-          <em>
-           chunks
-          </em>
-          . A single chunk of a column (which may be the whole
+            <em>
+             chunks
+            </em>
+            . A single chunk of a column (which may be the whole
 column if
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            num_chunks
-           </span>
-           <span class="pre">
-            ==
-           </span>
-           <span class="pre">
-            1
-           </span>
-          </code>
-          ) is modeled as again a
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            Column
-           </span>
-          </code>
-          instance, and
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              num_chunks
+             </span>
+             <span class="pre">
+              ==
+             </span>
+             <span class="pre">
+              1
+             </span>
+            </code>
+            ) is modeled as again a
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              Column
+             </span>
+            </code>
+            instance, and
 contains 1 data
-          <em>
-           buffer
-          </em>
-          and (optionally) one
-          <em>
-           mask
-          </em>
-          for missing data.
-         </p>
-        </li>
-        <li>
-         <p>
-          A
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            DataFrame
-           </span>
-          </code>
-          class. A
-          <em>
-           data frame
-          </em>
-          is an ordered collection of
-          <em>
-           columns
-          </em>
-          ,
+            <em>
+             buffer
+            </em>
+            and (optionally) one
+            <em>
+             mask
+            </em>
+            for missing data.
+           </p>
+          </li>
+          <li>
+           <p>
+            A
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              DataFrame
+             </span>
+            </code>
+            class. A
+            <em>
+             data frame
+            </em>
+            is an ordered collection of
+            <em>
+             columns
+            </em>
+            ,
 which are identified with names that are unique strings.  All the data
 frame’s rows are the same length. It can consist of multiple
-          <em>
-           chunks
-          </em>
-          . A
+            <em>
+             chunks
+            </em>
+            . A
 single chunk of a data frame is modeled as again a
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            DataFrame
-           </span>
-          </code>
-          instance.
-         </p>
-        </li>
-        <li>
-         <p>
-          A
-          <em>
-           mask
-          </em>
-          concept. A
-          <em>
-           mask
-          </em>
-          of a single-chunk column is a
-          <em>
-           buffer
-          </em>
-          .
-         </p>
-        </li>
-        <li>
-         <p>
-          A
-          <em>
-           chunk
-          </em>
-          concept. A
-          <em>
-           chunk
-          </em>
-          is a sub-dividing element that can be applied
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              DataFrame
+             </span>
+            </code>
+            instance.
+           </p>
+          </li>
+          <li>
+           <p>
+            A
+            <em>
+             mask
+            </em>
+            concept. A
+            <em>
+             mask
+            </em>
+            of a single-chunk column is a
+            <em>
+             buffer
+            </em>
+            .
+           </p>
+          </li>
+          <li>
+           <p>
+            A
+            <em>
+             chunk
+            </em>
+            concept. A
+            <em>
+             chunk
+            </em>
+            is a sub-dividing element that can be applied
 to a
-          <em>
-           data frame
-          </em>
-          or a
-          <em>
-           column
-          </em>
-          .
-         </p>
-        </li>
-       </ol>
-       <p>
-        Note that the only way to access these objects is through a call to
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        on a data frame object. This is NOT meant as public API;
-only think of instances of the different classes here to describe the API of
-what is returned by a call to
-        <code class="docutils literal notranslate">
-         <span class="pre">
-          __dataframe__
-         </span>
-        </code>
-        . They are the concepts needed
-to capture the memory layout and data access of a data frame.
-       </p>
-       <h2 id="design-decisions">
-        Design decisions
-        <a class="headerlink" href="#design-decisions" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <ol>
-        <li>
-         <p>
-          Use a separate column abstraction in addition to a dataframe interface.
-         </p>
-         <p>
-          Rationales:
-         </p>
-         <ul class="simple">
-          <li>
-           <p>
-            This is how it works in R, Julia and Apache Arrow.
+            <em>
+             data frame
+            </em>
+            or a
+            <em>
+             column
+            </em>
+            .
            </p>
           </li>
-          <li>
-           <p>
-            Semantically most existing applications and users treat a column similar to a 1-D array
-           </p>
-          </li>
-          <li>
-           <p>
-            We should be able to connect a column to the array data interchange mechanism(s)
-           </p>
-          </li>
-         </ul>
+         </ol>
          <p>
-          Note that this does not imply a library must have such a public user-facing
-abstraction (ex.
-          <code class="docutils literal notranslate">
-           <span class="pre">
-            pandas.Series
-           </span>
-          </code>
-          ) - it can only be accessed via
+          Note that the only way to access these objects is through a call to
           <code class="docutils literal notranslate">
            <span class="pre">
             __dataframe__
            </span>
           </code>
-          .
+          on a data frame object. This is NOT meant as public API;
+only think of instances of the different classes here to describe the API of
+what is returned by a call to
+          <code class="docutils literal notranslate">
+           <span class="pre">
+            __dataframe__
+           </span>
+          </code>
+          . They are the concepts needed
+to capture the memory layout and data access of a data frame.
          </p>
-        </li>
-        <li>
-         <p>
-          Use methods and properties on an opaque object rather than returning
-hierarchical dictionaries describing memory.
-         </p>
-         <p>
-          This is better for implementations that may rely on, for example, lazy
-computation.
-         </p>
-        </li>
-        <li>
-         <p>
-          No row names. If a library uses row names, use a regular column for them.
-         </p>
-         <p>
-          See discussion at
-          <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1/files#r394316241">
-           wesm/dataframe-protocol/pull/1
+        </section>
+        <section id="design-decisions">
+         <h2 id="design-decisions">
+          Design decisions
+          <a class="headerlink" href="#design-decisions" title="Permalink to this headline">
+           ¶
           </a>
-          Optional row names are not a good idea, because people will assume they’re
+         </h2>
+         <ol class="arabic">
+          <li>
+           <p>
+            Use a separate column abstraction in addition to a dataframe interface.
+           </p>
+           <p>
+            Rationales:
+           </p>
+           <ul class="simple">
+            <li>
+             <p>
+              This is how it works in R, Julia and Apache Arrow.
+             </p>
+            </li>
+            <li>
+             <p>
+              Semantically most existing applications and users treat a column similar to a 1-D array
+             </p>
+            </li>
+            <li>
+             <p>
+              We should be able to connect a column to the array data interchange mechanism(s)
+             </p>
+            </li>
+           </ul>
+           <p>
+            Note that this does not imply a library must have such a public user-facing
+abstraction (ex.
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              pandas.Series
+             </span>
+            </code>
+            ) - it can only be accessed via
+            <code class="docutils literal notranslate">
+             <span class="pre">
+              __dataframe__
+             </span>
+            </code>
+            .
+           </p>
+          </li>
+          <li>
+           <p>
+            Use methods and properties on an opaque object rather than returning
+hierarchical dictionaries describing memory.
+           </p>
+           <p>
+            This is better for implementations that may rely on, for example, lazy
+computation.
+           </p>
+          </li>
+          <li>
+           <p>
+            No row names. If a library uses row names, use a regular column for them.
+           </p>
+           <p>
+            See discussion at
+            <a class="reference external" href="https://github.com/wesm/dataframe-protocol/pull/1/files#r394316241">
+             wesm/dataframe-protocol/pull/1
+            </a>
+            Optional row names are not a good idea, because people will assume they’re
 present (see cuDF experience, forced to add because pandas has them).
 Requiring row names seems worse than leaving them out.  Note that row labels
 could be added in the future - right now there’s no clear requirements for
 more complex row labels that cannot be represented by a single column. These
 do exist, for example Modin has has table and tree-based row labels.
-         </p>
-        </li>
-       </ol>
-       <h2 id="interface">
-        Interface
-        <a class="headerlink" href="#interface" title="Permalink to this headline">
-         ¶
-        </a>
-       </h2>
-       <div class="highlight-python notranslate">
-        <div class="highlight">
-         <pre><span></span><span class="k">class</span> <span class="nc">Buffer</span><span class="p">:</span>
-    <span class="sd">"""</span>
+           </p>
+          </li>
+         </ol>
+        </section>
+        <section id="interface">
+         <h2 id="interface">
+          Interface
+          <a class="headerlink" href="#interface" title="Permalink to this headline">
+           ¶
+          </a>
+         </h2>
+         <div class="highlight-python notranslate">
+          <div class="highlight">
+           <pre><span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ABC</span><span class="p">,</span>
+    <span class="n">abstractmethod</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">TypedDict</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">DlpackDeviceType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Integer enum for device type codes matching DLPack."""</span>
+
+    <span class="n">CPU</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CUDA</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">CPU_PINNED</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">OPENCL</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">VULKAN</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">METAL</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">VPI</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">ROCM</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+<span class="k">class</span> <span class="nc">DtypeKind</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Integer enum for data types.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    INT : int</span>
+<span class="sd">        Matches to signed integer data type.</span>
+<span class="sd">    UINT : int</span>
+<span class="sd">        Matches to unsigned integer data type.</span>
+<span class="sd">    FLOAT : int</span>
+<span class="sd">        Matches to floating point data type.</span>
+<span class="sd">    BOOL : int</span>
+<span class="sd">        Matches to boolean data type.</span>
+<span class="sd">    STRING : int</span>
+<span class="sd">        Matches to string data type (UTF-8 encoded).</span>
+<span class="sd">    DATETIME : int</span>
+<span class="sd">        Matches to datetime data type.</span>
+<span class="sd">    CATEGORICAL : int</span>
+<span class="sd">        Matches to categorical data type.</span>
+<span class="sd">    """</span>
+
+    <span class="n">INT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">UINT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">FLOAT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">BOOL</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="mi">21</span>  <span class="c1"># UTF-8</span>
+    <span class="n">DATETIME</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">CATEGORICAL</span> <span class="o">=</span> <span class="mi">23</span>
+
+
+<span class="n">Dtype</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DtypeKind</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>  <span class="c1"># see Column.dtype</span>
+
+
+<span class="k">class</span> <span class="nc">ColumnNullType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Integer enum for null type representation.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    NON_NULLABLE : int</span>
+<span class="sd">        Non-nullable column.</span>
+<span class="sd">    USE_NAN : int</span>
+<span class="sd">        Use explicit float NaN value.</span>
+<span class="sd">    USE_SENTINEL : int</span>
+<span class="sd">        Sentinel value besides NaN.</span>
+<span class="sd">    USE_BITMASK : int</span>
+<span class="sd">        The bit is set/unset representing a null on a certain position.</span>
+<span class="sd">    USE_BYTEMASK : int</span>
+<span class="sd">        The byte is set/unset representing a null on a certain position.</span>
+<span class="sd">    """</span>
+
+    <span class="n">NON_NULLABLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">USE_NAN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">USE_SENTINEL</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">USE_BITMASK</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">USE_BYTEMASK</span> <span class="o">=</span> <span class="mi">4</span>
+
+
+<span class="k">class</span> <span class="nc">ColumnBuffers</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="c1"># first element is a buffer containing the column data;</span>
+    <span class="c1"># second element is the data buffer's associated dtype</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="s2">"Buffer"</span><span class="p">,</span> <span class="n">Dtype</span><span class="p">]</span>
+
+    <span class="c1"># first element is a buffer containing mask values indicating missing data;</span>
+    <span class="c1"># second element is the mask value buffer's associated dtype.</span>
+    <span class="c1"># None if the null representation is not a bit or byte mask</span>
+    <span class="n">validity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">"Buffer"</span><span class="p">,</span> <span class="n">Dtype</span><span class="p">]]</span>
+
+    <span class="c1"># first element is a buffer containing the offset values for</span>
+    <span class="c1"># variable-size binary data (e.g., variable-length strings);</span>
+    <span class="c1"># second element is the offsets buffer's associated dtype.</span>
+    <span class="c1"># None if the data buffer does not have an associated offsets buffer</span>
+    <span class="n">offsets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">"Buffer"</span><span class="p">,</span> <span class="n">Dtype</span><span class="p">]]</span>
+
+
+<span class="k">class</span> <span class="nc">CategoricalDescription</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="c1"># whether the ordering of dictionary indices is semantically meaningful</span>
+    <span class="n">is_ordered</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="c1"># whether a dictionary-style mapping of categorical values to other objects exists</span>
+    <span class="n">is_dictionary</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="c1"># Python-level only (e.g. ``{int: str}``).</span>
+    <span class="c1"># None if not a dictionary-style categorical.</span>
+    <span class="n">categories</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Column</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">Buffer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Data in the buffer is guaranteed to be contiguous in memory.</span>
 
 <span class="sd">    Note that there is no dtype attribute present, a buffer can be thought of</span>
@@ -611,21 +731,24 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">    """</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">bufsize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Buffer size in bytes.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Pointer to start of the buffer as an integer.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">__dlpack__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Produce DLPack capsule (see array API standard).</span>
 
 <span class="sd">        Raises:</span>
@@ -638,28 +761,18 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"__dlpack__"</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__dlpack_device__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__dlpack_device__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DlpackDeviceType</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Device type and device ID for where the data in the buffer resides.</span>
-
-<span class="sd">        Uses device type codes matching DLPack. Enum members are::</span>
-
-<span class="sd">            - CPU = 1</span>
-<span class="sd">            - CUDA = 2</span>
-<span class="sd">            - CPU_PINNED = 3</span>
-<span class="sd">            - OPENCL = 4</span>
-<span class="sd">            - VULKAN = 7</span>
-<span class="sd">            - METAL = 8</span>
-<span class="sd">            - VPI = 9</span>
-<span class="sd">            - ROCM = 10</span>
-
+<span class="sd">        Uses device type codes matching DLPack.</span>
 <span class="sd">        Note: must be implemented even if ``__dlpack__`` is not.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">Column</span><span class="p">:</span>
-    <span class="sd">"""</span>
+<span class="k">class</span> <span class="nc">Column</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A column object, with only the methods and properties required by the</span>
 <span class="sd">    interchange protocol defined.</span>
 
@@ -700,22 +813,25 @@ do exist, for example Modin has has table and tree-based row labels.
 
 <span class="sd">    Note: this Column object can only be produced by ``__dataframe__``, so</span>
 <span class="sd">          doesn't need its own version or ``__column__`` protocol.</span>
-
 <span class="sd">    """</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Size of the column, in elements.</span>
 
 <span class="sd">        Corresponds to DataFrame.num_rows() if column is a single chunk;</span>
 <span class="sd">        equal to size of this current chunk otherwise.</span>
+
+<span class="sd">        Is a method rather than a property because it may cause a (potentially</span>
+<span class="sd">        expensive) computation for some dataframe implementations.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Offset of first element.</span>
 
 <span class="sd">        May be &gt; 0 if using chunks; for example for a column with N chunks of</span>
@@ -725,19 +841,10 @@ do exist, for example Modin has has table and tree-based row labels.
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dtype</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Dtype description as a tuple ``(kind, bit-width, format string, endianness)``.</span>
-
-<span class="sd">        Kind :</span>
-
-<span class="sd">            - INT = 0</span>
-<span class="sd">            - UINT = 1</span>
-<span class="sd">            - FLOAT = 2</span>
-<span class="sd">            - BOOL = 20</span>
-<span class="sd">            - STRING = 21   # UTF-8</span>
-<span class="sd">            - DATETIME = 22</span>
-<span class="sd">            - CATEGORICAL = 23</span>
 
 <span class="sd">        Bit-width : the number of bits as an integer</span>
 <span class="sd">        Format string : data type description format string in Apache Arrow C</span>
@@ -745,7 +852,6 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">        Endianness : current only native endianness (``=``) is supported</span>
 
 <span class="sd">        Notes:</span>
-
 <span class="sd">            - Kind specifiers are aligned with DLPack where possible (hence the</span>
 <span class="sd">              jump to 20, leave enough room for future extension)</span>
 <span class="sd">            - Masks must be specified as boolean with either bit width 1 (for bit</span>
@@ -767,41 +873,34 @@ do exist, for example Modin has has table and tree-based row labels.
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">describe_categorical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">describe_categorical</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CategoricalDescription</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        If the dtype is categorical, there are two options:</span>
-
 <span class="sd">        - There are only values in the data buffer.</span>
-<span class="sd">        - There is a separate dictionary-style encoding for categorical values.</span>
+<span class="sd">        - There is a separate non-categorical Column encoding categorical values.</span>
 
-<span class="sd">        Raises RuntimeError if the dtype is not categorical</span>
+<span class="sd">        Raises TypeError if the dtype is not categorical</span>
 
-<span class="sd">        Content of returned dict:</span>
-
+<span class="sd">        Returns the dictionary with description on how to interpret the data buffer:</span>
 <span class="sd">            - "is_ordered" : bool, whether the ordering of dictionary indices is</span>
 <span class="sd">                             semantically meaningful.</span>
-<span class="sd">            - "is_dictionary" : bool, whether a dictionary-style mapping of</span>
+<span class="sd">            - "is_dictionary" : bool, whether a mapping of</span>
 <span class="sd">                                categorical values to other objects exists</span>
-<span class="sd">            - "mapping" : dict, Python-level only (e.g. ``{int: str}``).</span>
-<span class="sd">                          None if not a dictionary-style categorical.</span>
+<span class="sd">            - "categories" : Column representing the (implicit) mapping of indices to</span>
+<span class="sd">                             category values (e.g. an array of cat1, cat2, ...).</span>
+<span class="sd">                             None if not a dictionary-style categorical.</span>
 
 <span class="sd">        TBD: are there any other in-memory representations that are needed?</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">describe_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">describe_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ColumnNullType</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the missing value (or "null") representation the column dtype</span>
 <span class="sd">        uses, as a tuple ``(kind, value)``.</span>
-
-<span class="sd">        Kind:</span>
-
-<span class="sd">            - 0 : non-nullable</span>
-<span class="sd">            - 1 : NaN/NaT</span>
-<span class="sd">            - 2 : sentinel value</span>
-<span class="sd">            - 3 : bit mask</span>
-<span class="sd">            - 4 : byte mask</span>
 
 <span class="sd">        Value : if kind is "sentinel value", the actual value. If kind is a bit</span>
 <span class="sd">        mask or a byte mask, the value (0 or 1) indicating a missing value. None</span>
@@ -810,8 +909,9 @@ do exist, for example Modin has has table and tree-based row labels.
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">null_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Number of null elements, if known.</span>
 
 <span class="sd">        Note: Arrow uses -1 to indicate "unknown", but None seems cleaner.</span>
@@ -819,28 +919,32 @@ do exist, for example Modin has has table and tree-based row labels.
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        The metadata for the column. See `DataFrame.metadata` for more details.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">num_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the number of chunks the column consists of.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Column</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"Column"</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return an iterator yielding the chunks.</span>
 
 <span class="sd">        See `DataFrame.get_chunks` for details on ``n_chunks``.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">get_buffers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Buffer</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Buffer</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Buffer</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_buffers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnBuffers</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a dictionary containing the underlying buffers.</span>
 
 <span class="sd">        The returned dictionary has the following contents:</span>
@@ -862,6 +966,7 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+
 <span class="c1">#    def get_children(self) -&gt; Iterable[Column]:</span>
 <span class="c1">#        """</span>
 <span class="c1">#        Children columns underneath the column, each object in this iterator</span>
@@ -870,8 +975,8 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="c1">#        pass</span>
 
 
-<span class="k">class</span> <span class="nc">DataFrame</span><span class="p">:</span>
-    <span class="sd">"""</span>
+<span class="k">class</span> <span class="nc">DataFrame</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A data frame class, with only the methods required by the interchange</span>
 <span class="sd">    protocol defined.</span>
 
@@ -884,31 +989,31 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">    ``__dataframe__`` method of a public data frame class in a library adhering</span>
 <span class="sd">    to the dataframe interchange protocol specification.</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="nf">__dataframe__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nan_as_null</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                      <span class="n">allow_copy</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Produces a dictionary object following the dataframe protocol specification.</span>
+
+    <span class="n">version</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># version of the protocol</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__dataframe__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">nan_as_null</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">allow_copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DataFrame"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Construct a new exchange object, potentially changing the parameters.</span>
 
 <span class="sd">        ``nan_as_null`` is a keyword intended for the consumer to tell the</span>
-<span class="sd">        producer to overwrite null values in the data with ``NaN`` (or ``NaT``).</span>
+<span class="sd">        producer to overwrite null values in the data with ``NaN``.</span>
 <span class="sd">        It is intended for cases where the consumer does not support the bit</span>
 <span class="sd">        mask or byte mask that is the producer's native representation.</span>
-
 <span class="sd">        ``allow_copy`` is a keyword that defines whether or not the library is</span>
 <span class="sd">        allowed to make a copy of the data. For example, copying data would be</span>
 <span class="sd">        necessary if a library supports strided buffers, given that this protocol</span>
 <span class="sd">        specifies contiguous buffers.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nan_as_null</span> <span class="o">=</span> <span class="n">nan_as_null</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_zero_zopy</span> <span class="o">=</span> <span class="n">allow_copy</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">"dataframe"</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>  <span class="c1"># DataFrame object adhering to the protocol</span>
-            <span class="s2">"version"</span><span class="p">:</span> <span class="mi">0</span>        <span class="c1"># Version number of the protocol</span>
-        <span class="p">}</span>
+        <span class="k">pass</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        The metadata for the data frame, as a dictionary with string keys. The</span>
 <span class="sd">        contents of `metadata` may be anything, they are meant for a library</span>
 <span class="sd">        to store information that it needs to, e.g., roundtrip losslessly or</span>
@@ -919,76 +1024,91 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">num_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the number of columns in the DataFrame.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">num_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="c1"># TODO: not happy with Optional, but need to flag it may be expensive</span>
         <span class="c1">#       why include it if it may be None - what do we expect consumers</span>
         <span class="c1">#       to do here?</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the number of rows in the DataFrame, if available.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">num_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the number of chunks the DataFrame consists of.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return an iterator yielding the column names.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the column at the indicated position.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_column_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Column</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the column whose name is the indicated name.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Column</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return an iterator yielding the columns.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">select_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">select_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"DataFrame"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a new DataFrame by selecting a subset of columns by index.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">select_columns_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">select_columns_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"DataFrame"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a new DataFrame by selecting a subset of columns by name.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">DataFrame</span><span class="p">]:</span>
-        <span class="sd">"""</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"DataFrame"</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return an iterator yielding the chunks.</span>
 
 <span class="sd">        By default (None), yields the chunks that the data is stored as by the</span>
 <span class="sd">        producer. If given, ``n_chunks`` must be a multiple of</span>
 <span class="sd">        ``self.num_chunks()``, meaning the producer must subdivide each chunk</span>
 <span class="sd">        before yielding it.</span>
+
+<span class="sd">        Note that the producer must ensure that all columns are chunked the</span>
+<span class="sd">        same way.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span>
 </pre>
-        </div>
-       </div>
+          </div>
+         </div>
+        </section>
+       </section>
       </article>
      </div>
     </div>
@@ -1023,7 +1143,7 @@ do exist, for example Modin has has table and tree-based row labels.
       <a href="http://www.sphinx-doc.org/">
        Sphinx
       </a>
-      3.1.1.
+      4.3.0.
              and
       <a href="https://github.com/bashtage/sphinx-material/">
        Material for
