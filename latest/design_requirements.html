@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+  <meta content="Docutils 0.19: https://docutils.sourceforge.io/" name="generator"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
   <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
@@ -45,11 +45,9 @@
   <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
   <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
   </script>
-  <script src="_static/jquery.js">
-  </script>
-  <script src="_static/underscore.js">
-  </script>
   <script src="_static/doctools.js">
+  </script>
+  <script src="_static/sphinx_highlight.js">
   </script>
   <script src="_static/clipboard.min.js">
   </script>
@@ -108,7 +106,7 @@
        <label class="md-search__overlay" for="__search">
        </label>
        <div class="md-search__inner" role="search">
-        <form action="search.html" class="md-search__form" method="GET" name="search">
+        <form action="search.html" class="md-search__form" method="get" name="search">
          <input autocapitalize="off" autocomplete="off" class="md-search__input" data-md-component="query" data-md-state="active" name="q" placeholder="Search" spellcheck="false" type="text"/>
          <label class="md-icon md-search__icon" for="__search">
          </label>
@@ -504,7 +502,7 @@
        <section id="design-concepts-and-requirements">
         <h1 id="design-requirements--page-root">
          Design concepts and requirements
-         <a class="headerlink" href="#design-requirements--page-root" title="Permalink to this headline">
+         <a class="headerlink" href="#design-requirements--page-root" title="Permalink to this heading">
           ¶
          </a>
         </h1>
@@ -515,7 +513,7 @@ dataframe interchange protcol, and the functionality it needs to support.
         <section id="conceptual-model-of-a-dataframe">
          <h2 id="conceptual-model-of-a-dataframe">
           Conceptual model of a dataframe
-          <a class="headerlink" href="#conceptual-model-of-a-dataframe" title="Permalink to this headline">
+          <a class="headerlink" href="#conceptual-model-of-a-dataframe" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -556,7 +554,7 @@ or dataframe that contains a set of (neighboring) rows.
          </span>
          <h2 id="protocol-design-requirements">
           Protocol design requirements
-          <a class="headerlink" href="#protocol-design-requirements" title="Permalink to this headline">
+          <a class="headerlink" href="#protocol-design-requirements" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -880,7 +878,7 @@ fundamentally built around describing data in memory
          <section id="to-be-decided">
           <h3 id="to-be-decided">
            To be decided
-           <a class="headerlink" href="#to-be-decided" title="Permalink to this headline">
+           <a class="headerlink" href="#to-be-decided" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -922,14 +920,14 @@ Discussion at
         <section id="frequently-asked-questions">
          <h2 id="frequently-asked-questions">
           Frequently asked questions
-          <a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">
+          <a class="headerlink" href="#frequently-asked-questions" title="Permalink to this heading">
            ¶
           </a>
          </h2>
          <section id="can-the-arrow-c-data-interface-be-used-for-this">
           <h3 id="can-the-arrow-c-data-interface-be-used-for-this">
            Can the Arrow C Data Interface be used for this?
-           <a class="headerlink" href="#can-the-arrow-c-data-interface-be-used-for-this" title="Permalink to this headline">
+           <a class="headerlink" href="#can-the-arrow-c-data-interface-be-used-for-this" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1017,7 +1015,7 @@ semantics here need to be ironed out. See Arrow docs on
             </span>
            </code>
            ?
-           <a class="headerlink" href="#is-dataframe-analogous-to-array-or-array-interface" title="Permalink to this headline">
+           <a class="headerlink" href="#is-dataframe-analogous-to-array-or-array-interface" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1103,7 +1101,7 @@ NumPy, and call a NumPy
             </span>
            </code>
            ?
-           <a class="headerlink" href="#what-is-wrong-with-to-numpy-and-to-arrow" title="Permalink to this headline">
+           <a class="headerlink" href="#what-is-wrong-with-to-numpy-and-to-arrow" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1168,7 +1166,7 @@ complexity for very limited gains - for an issue with discussion on that, see
          <section id="does-an-interface-describing-memory-work-for-virtual-columns">
           <h3 id="does-an-interface-describing-memory-work-for-virtual-columns">
            Does an interface describing memory work for virtual columns?
-           <a class="headerlink" href="#does-an-interface-describing-memory-work-for-virtual-columns" title="Permalink to this headline">
+           <a class="headerlink" href="#does-an-interface-describing-memory-work-for-virtual-columns" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1238,14 +1236,14 @@ computational graph approach like Dask uses, etc.).
         <section id="possible-direction-for-implementation">
          <h2 id="possible-direction-for-implementation">
           Possible direction for implementation
-          <a class="headerlink" href="#possible-direction-for-implementation" title="Permalink to this headline">
+          <a class="headerlink" href="#possible-direction-for-implementation" title="Permalink to this heading">
            ¶
           </a>
          </h2>
          <section id="rough-initial-prototypes-historical">
           <h3 id="rough-initial-prototypes-historical">
            Rough initial prototypes (historical)
-           <a class="headerlink" href="#rough-initial-prototypes-historical" title="Permalink to this headline">
+           <a class="headerlink" href="#rough-initial-prototypes-historical" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1285,7 +1283,7 @@ McKinney was the first attempt, and has some useful features.
          <section id="relevant-existing-protocols">
           <h3 id="relevant-existing-protocols">
            Relevant existing protocols
-           <a class="headerlink" href="#relevant-existing-protocols" title="Permalink to this headline">
+           <a class="headerlink" href="#relevant-existing-protocols" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -1633,7 +1631,7 @@ PyArrow already does provide such functionality.
           <section id="data-type-descriptions">
            <h4 id="data-type-descriptions">
             Data type descriptions
-            <a class="headerlink" href="#data-type-descriptions" title="Permalink to this headline">
+            <a class="headerlink" href="#data-type-descriptions" title="Permalink to this heading">
              ¶
             </a>
            </h4>
@@ -1799,7 +1797,7 @@ does. Here are some examples:
         <section id="references">
          <h2 id="references">
           References
-          <a class="headerlink" href="#references" title="Permalink to this headline">
+          <a class="headerlink" href="#references" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -1901,7 +1899,7 @@ does. Here are some examples:
       <a href="http://www.sphinx-doc.org/">
        Sphinx
       </a>
-      4.3.0.
+      6.2.1.
              and
       <a href="https://github.com/bashtage/sphinx-material/">
        Material for
