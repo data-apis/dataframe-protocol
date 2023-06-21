@@ -512,24 +512,30 @@ dataframe libraries, the example above can change to:
           </p>
           <div class="highlight-python notranslate">
            <div class="highlight">
-            <pre><span></span><span class="k">def</span> <span class="nf">get_df_module</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+            <pre><span></span><span class="k">def</span> <span class="nf">get_compliant_df</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Utility function to support programming against a dataframe API"""</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'__dataframe_namespace__'</span><span class="p">):</span>
-       <span class="c1"># Retrieve the namespace</span>
-       <span class="n">pdx</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">__dataframe_namespace__</span><span class="p">()</span>
+        <span class="c1"># Is already Standard-compliant DataFrame, nothing to do here.</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'__dataframe_standard__'</span><span class="p">):</span>
+        <span class="c1"># Convert to Standard-compliant DataFrame.</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">__dataframe_standard__</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Here we can raise an exception if we only want to support compliant dataframes,</span>
         <span class="c1"># or convert to our default choice of dataframe if we want to accept (e.g.) dicts</span>
-        <span class="n">pdx</span> <span class="o">=</span> <span class="n">pd</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">pdx</span><span class="p">,</span> <span class="n">df</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"Expected Standard-compliant DataFrame, or DataFrame with Standard-compliant implementation"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
 
 
 <span class="k">def</span> <span class="nf">somefunc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""`df` can be any dataframe conforming to the dataframe API standard"""</span>
-    <span class="n">pdx</span><span class="p">,</span> <span class="n">df</span> <span class="o">=</span> <span class="n">get_df_module</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    <span class="c1"># From now on, use `df` methods and `pdx` functions/objects</span>
+    <span class="c1"># Get Standard-compliant DataFrame.</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">get_compliant_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="c1"># Get Standard namespace (optional, only if you need methods from it).</span>
+    <span class="n">namespace</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">__dataframe_namespace__</span><span class="p">()</span>
+    <span class="c1"># From now on, use `df` methods and `namespace` functions/objects</span>
 </pre>
            </div>
           </div>
