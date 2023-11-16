@@ -779,20 +779,6 @@ do exist, for example Modin has has table and tree-based row labels.
 <span class="sd">    and an offsets buffer (if variable-size binary; e.g., variable-length</span>
 <span class="sd">    strings).</span>
 
-<span class="sd">    TBD: Arrow has a separate "null" dtype, and has no separate mask concept.</span>
-<span class="sd">         Instead, it seems to use "children" for both columns with a bit mask,</span>
-<span class="sd">         and for nested dtypes. Unclear whether this is elegant or confusing.</span>
-<span class="sd">         This design requires checking the null representation explicitly.</span>
-
-<span class="sd">         The Arrow design requires checking:</span>
-<span class="sd">         1. the ARROW_FLAG_NULLABLE (for sentinel values)</span>
-<span class="sd">         2. if a column has two children, combined with one of those children</span>
-<span class="sd">            having a null dtype.</span>
-
-<span class="sd">         Making the mask concept explicit seems useful. One null dtype would</span>
-<span class="sd">         not be enough to cover both bit and byte masks, so that would mean</span>
-<span class="sd">         even more checking if we did it the Arrow way.</span>
-
 <span class="sd">    TBD: there's also the "chunk" concept here, which is implicit in Arrow as</span>
 <span class="sd">         multiple buffers per array (= column here). Semantically it may make</span>
 <span class="sd">         sense to have both: chunks were meant for example for lazy evaluation</span>
